@@ -16,7 +16,7 @@ function getDashboardUrlByRole(role: string): string {
 
 export default withAuth(
   function middleware(req) {
-    const isTeacherRoute = req.nextUrl.pathname.startsWith("/dashboard/dashboard/teacher");
+    const isTeacherRoute = req.nextUrl.pathname.startsWith("/dashboard/teacher");
     const isTeacher = req.nextauth.token?.role === "TEACHER";
     const isAuthPage = req.nextUrl.pathname.startsWith("/sign-in") || 
                       req.nextUrl.pathname.startsWith("/sign-up") ||

@@ -23,6 +23,7 @@ export const auth = async () => {
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(db) as Adapter,
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -69,6 +70,11 @@ export const authOptions: AuthOptions = {
   ],
   session: {
     strategy: "jwt",
+    // Remove maxAge to make sessions persist indefinitely
+    updateAge: 0, // Disable session updates
+  },
+  jwt: {
+    // Remove maxAge to make JWT tokens persist indefinitely
   },
   pages: {
     signIn: "/sign-in",
@@ -90,10 +96,11 @@ export const authOptions: AuthOptions = {
       if (user) {
         // When user first signs in, set the token with user data
         return {
+          ...token,
           id: user.id,
           name: user.name,
           phoneNumber: user.phoneNumber,
-          picture: user.picture,
+          picture: (user as any).picture,
           role: user.role,
         };
       }
@@ -102,4 +109,5 @@ export const authOptions: AuthOptions = {
       return token;
     },
   },
+  debug: process.env.NODE_ENV === "development",
 }; 

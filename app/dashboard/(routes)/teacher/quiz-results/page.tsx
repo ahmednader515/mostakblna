@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,7 +44,7 @@ interface QuizAnswer {
     };
 }
 
-const QuizResultsPage = () => {
+const QuizResultsContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const quizId = searchParams.get('quizId');
@@ -332,6 +332,18 @@ const QuizResultsPage = () => {
                 </CardContent>
             </Card>
         </div>
+    );
+};
+
+const QuizResultsPage = () => {
+    return (
+        <Suspense fallback={
+            <div className="p-6">
+                <div className="text-center">جاري التحميل...</div>
+            </div>
+        }>
+            <QuizResultsContent />
+        </Suspense>
     );
 };
 

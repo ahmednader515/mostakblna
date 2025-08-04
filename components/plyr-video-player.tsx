@@ -67,7 +67,9 @@ export const PlyrVideoPlayer = ({
       };
 
       // Create Plyr instance
-      playerRef.current = new Plyr(videoElement, options);
+      if (videoElement) {
+        playerRef.current = new Plyr(videoElement, options);
+      }
 
       // Add event listeners
       if (onEnded) {

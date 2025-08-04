@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import axios, { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, CheckCircle2, Circle, Lock } from "lucide-react";
+import { ChevronLeft, ChevronRight, CheckCircle2, Circle, Lock, FileText, Download } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { PlyrVideoPlayer } from "@/components/plyr-video-player";
@@ -17,6 +17,8 @@ interface Chapter {
   videoUrl: string | null;
   videoType: "UPLOAD" | "YOUTUBE" | null;
   youtubeVideoId: string | null;
+  documentUrl: string | null;
+  documentName: string | null;
   nextChapterId?: string;
   previousChapterId?: string;
   nextContentType?: 'chapter' | 'quiz' | null;
@@ -34,6 +36,66 @@ const ChapterPage = () => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [courseProgress, setCourseProgress] = useState(0);
   const [hasAccess, setHasAccess] = useState(false);
+
+  // Helper function to extract filename from URL
+  const getFilenameFromUrl = (url: string): string => {
+    try {
+      const urlObj = new URL(url);
+      const pathname = urlObj.pathname;
+      const filename = pathname.split('/').pop();
+      
+      if (filename) {
+        // Decode URL encoding and handle special characters
+        const decodedFilename = decodeURIComponent(filename);
+        // Remove query parameters if any
+        const cleanFilename = decodedFilename.split('?')[0];
+        return cleanFilename || 'chapter-document';
+      }
+      return 'chapter-document';
+    } catch {
+      return 'chapter-document';
+    }
+  };
+
+  // Helper function to download document
+  const downloadDocument = async (url: string) => {
+    try {
+      // Try the API download first
+      const downloadUrl = `/api/courses/${routeParams.courseId}/chapters/${routeParams.chapterId}/document/download`;
+      const response = await fetch(downloadUrl);
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const downloadUrl2 = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl2;
+        link.download = getFilenameFromUrl(url);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl2);
+      } else {
+        // Fallback to direct download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = getFilenameFromUrl(url);
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (error) {
+      console.error('Download failed:', error);
+      // Final fallback
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = getFilenameFromUrl(url);
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -166,8 +228,8 @@ const ChapterPage = () => {
             {chapter.videoUrl ? (
               <PlyrVideoPlayer
                 videoUrl={chapter.videoType === "UPLOAD" ? chapter.videoUrl : undefined}
-                youtubeVideoId={chapter.videoType === "YOUTUBE" ? chapter.youtubeVideoId : undefined}
-                videoType={chapter.videoType || "UPLOAD"}
+                youtubeVideoId={chapter.videoType === "YOUTUBE" ? chapter.youtubeVideoId || undefined : undefined}
+                videoType={(chapter.videoType as "UPLOAD" | "YOUTUBE") || "UPLOAD"}
                 className="w-full h-full"
                 onEnded={onEnd}
                 onTimeUpdate={(currentTime) => {
@@ -207,6 +269,43 @@ const ChapterPage = () => {
             <div className="prose max-w-none">
               <div dangerouslySetInnerHTML={{ __html: chapter.description || "" }} />
             </div>
+            
+            {/* Document Section */}
+            {chapter.documentUrl && (
+              <div className="mt-6 p-4 border rounded-lg bg-card">
+                <div className="flex items-center gap-2 mb-3">
+                  <FileText className="h-5 w-5 text-muted-foreground" />
+                  <h3 className="text-lg font-semibold">مستندات الفصل</h3>
+                </div>
+                <div className="flex items-center p-3 w-full bg-secondary/50 border-secondary/50 border text-secondary-foreground rounded-md">
+                  <FileText className="h-4 w-4 mr-2 flex-shrink-0" />
+                  <div className="flex flex-col min-w-0 flex-1">
+                    <p className="text-sm font-medium truncate">
+                      {chapter.documentName || getFilenameFromUrl(chapter.documentUrl || '')}
+                    </p>
+                    <p className="text-xs text-muted-foreground">مستند الفصل</p>
+                  </div>
+                  <div className="mr-auto flex items-center gap-2 flex-shrink-0">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => window.open(chapter.documentUrl!, '_blank')}
+                    >
+                      عرض المستند
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => downloadDocument(chapter.documentUrl!).catch(console.error)}
+                      className="flex items-center gap-1"
+                    >
+                      <Download className="h-3 w-3" />
+                      تحميل
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Navigation Buttons */}

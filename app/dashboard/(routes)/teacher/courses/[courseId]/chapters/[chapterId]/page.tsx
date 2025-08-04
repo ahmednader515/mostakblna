@@ -3,8 +3,9 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { ChapterForm } from "./_components/chapter-form";
 import { VideoForm } from "./_components/video-form";
+import { DocumentForm } from "./_components/document-form";
 import Link from "next/link";
-import { ArrowLeft, Video } from "lucide-react";
+import { ArrowLeft, Video, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IconBadge } from "@/components/icon-badge";
 
@@ -70,18 +71,33 @@ export default async function ChapterPage({
                         chapterId={chapterId}
                     />
                 </div>
-                <div>
-                    <div className="flex items-center gap-x-2">
-                        <IconBadge icon={Video} />
-                        <h2 className="text-xl">
-                            إضافة فيديو
-                        </h2>
+                <div className="space-y-6">
+                    <div>
+                        <div className="flex items-center gap-x-2">
+                            <IconBadge icon={Video} />
+                            <h2 className="text-xl">
+                                إضافة فيديو
+                            </h2>
+                        </div>
+                        <VideoForm
+                            initialData={chapter}
+                            courseId={courseId}
+                            chapterId={chapterId}
+                        />
                     </div>
-                    <VideoForm
-                        initialData={chapter}
-                        courseId={courseId}
-                        chapterId={chapterId}
-                    />
+                    <div>
+                        <div className="flex items-center gap-x-2">
+                            <IconBadge icon={FileText} />
+                            <h2 className="text-xl">
+                                إضافة مستند
+                            </h2>
+                        </div>
+                        <DocumentForm
+                            initialData={chapter}
+                            courseId={courseId}
+                            chapterId={chapterId}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

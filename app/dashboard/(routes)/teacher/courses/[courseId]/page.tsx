@@ -7,7 +7,6 @@ import { TitleForm } from "./_components/title-form";
 import { DescriptionForm } from "./_components/description-form";
 import { ImageForm } from "./_components/image-form";
 import { PriceForm } from "./_components/price-form";
-import { AttachmentForm } from "./_components/attachment-form";
 import { CourseContentForm } from "./_components/course-content-form";
 import { Banner } from "@/components/banner";
 import { Actions } from "./_components/actions";
@@ -40,11 +39,6 @@ export default async function CourseIdPage({
             quizzes: {
                 orderBy: {
                     position: "asc",
-                },
-            },
-            attachments: {
-                orderBy: {
-                    createdAt: "desc",
                 },
             },
         }
@@ -109,10 +103,6 @@ export default async function CourseIdPage({
                             initialData={course}
                             courseId={course.id}
                         />
-                        <ImageForm
-                            initialData={course}
-                            courseId={course.id}
-                        />
                         <PriceForm
                             initialData={course}
                             courseId={course.id}
@@ -130,7 +120,15 @@ export default async function CourseIdPage({
                                 initialData={course}
                                 courseId={course.id}
                             />
-                            <AttachmentForm
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-x-2">
+                                <IconBadge icon={LayoutDashboard} />
+                                <h2 className="text-xl">
+                                    إعدادات الدورة
+                                </h2>
+                            </div>
+                            <ImageForm
                                 initialData={course}
                                 courseId={course.id}
                             />

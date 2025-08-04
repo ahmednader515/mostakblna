@@ -14,7 +14,7 @@ import { PlyrVideoPlayer } from "@/components/plyr-video-player";
 interface VideoFormProps {
     initialData: {
         videoUrl: string | null;
-        videoType: "UPLOAD" | "YOUTUBE" | null;
+        videoType: string | null;
         youtubeVideoId: string | null;
     };
     courseId: string;
@@ -120,8 +120,8 @@ export const VideoForm = ({
                     {initialData.videoUrl ? (
                         <PlyrVideoPlayer
                             videoUrl={initialData.videoType === "UPLOAD" ? initialData.videoUrl : undefined}
-                            youtubeVideoId={initialData.videoType === "YOUTUBE" ? initialData.youtubeVideoId : undefined}
-                            videoType={initialData.videoType || "UPLOAD"}
+                            youtubeVideoId={initialData.videoType === "YOUTUBE" ? initialData.youtubeVideoId || undefined : undefined}
+                            videoType={(initialData.videoType as "UPLOAD" | "YOUTUBE") || "UPLOAD"}
                             className="w-full h-full"
                         />
                     ) : (

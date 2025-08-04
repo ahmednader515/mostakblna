@@ -26,9 +26,6 @@ export default async function ChapterPage({
         where: {
             id: chapterId,
             courseId: courseId
-        },
-        include: {
-            muxData: true,
         }
     });
 

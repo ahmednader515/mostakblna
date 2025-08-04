@@ -66,12 +66,11 @@ model Chapter {
   title String @db.Text
   description String? @db.Text
   videoUrl String? @db.Text
+  videoType String? @default("UPLOAD") // "UPLOAD" or "YOUTUBE"
+  youtubeVideoId String? // Store YouTube video ID
   position Int
   isPublished Boolean @default(false)
   isFree Boolean @default(false)
-  muxUploadId String?
-
-  muxData MuxData?
 
   courseId String
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -82,16 +81,6 @@ model Chapter {
   updatedAt DateTime @updatedAt
 
   @@index([courseId])
-}
-
-model MuxData {
-  id String @id @default(uuid())
-  assetId String
-  playbackId String?
-  uploadId String?
-
-  chapterId String @unique
-  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 }
 
 model UserProgress {

@@ -5,18 +5,18 @@ import { useRouter, useParams } from "next/navigation";
 import axios, { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, CheckCircle2, Circle, Lock } from "lucide-react";
-import MuxPlayer from "@mux/mux-player-react";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import { PlyrVideoPlayer } from "@/components/plyr-video-player";
 
 interface Chapter {
   id: string;
   title: string;
   description: string | null;
   isFree: boolean;
-  muxData?: {
-    playbackId: string;
-  };
+  videoUrl: string | null;
+  videoType: "UPLOAD" | "YOUTUBE" | null;
+  youtubeVideoId: string | null;
   nextChapterId?: string;
   previousChapterId?: string;
   nextContentType?: 'chapter' | 'quiz' | null;
@@ -104,7 +104,6 @@ const ChapterPage = () => {
       } else {
         router.push(`/courses/${routeParams.courseId}/chapters/${chapter.nextChapterId}`);
       }
-      router.refresh();
     }
   };
 
@@ -115,14 +114,13 @@ const ChapterPage = () => {
       } else {
         router.push(`/courses/${routeParams.courseId}/chapters/${chapter.previousChapterId}`);
       }
-      router.refresh();
     }
   };
 
   if (loading) {
     return (
       <div className="h-full flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="text-muted-foreground">جاري التحميل...</div>
       </div>
     );
   }
@@ -165,21 +163,20 @@ const ChapterPage = () => {
 
           {/* Video Player Section */}
           <div className="aspect-video relative bg-black rounded-lg overflow-hidden">
-            {chapter.muxData?.playbackId ? (
-              <MuxPlayer
-                playbackId={chapter.muxData.playbackId}
-                metadata={{
-                  video_title: chapter.title,
-                  player_name: "LMS Course Player",
-                }}
-                streamType="on-demand"
-                autoPlay={false}
+            {chapter.videoUrl ? (
+              <PlyrVideoPlayer
+                videoUrl={chapter.videoType === "UPLOAD" ? chapter.videoUrl : undefined}
+                youtubeVideoId={chapter.videoType === "YOUTUBE" ? chapter.youtubeVideoId : undefined}
+                videoType={chapter.videoType || "UPLOAD"}
                 className="w-full h-full"
                 onEnded={onEnd}
+                onTimeUpdate={(currentTime) => {
+                  console.log("Video time update:", currentTime);
+                }}
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-white">
-                No video available
+                لا يوجد فيديو متاح
               </div>
             )}
           </div>

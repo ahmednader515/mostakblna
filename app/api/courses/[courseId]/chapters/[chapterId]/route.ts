@@ -27,7 +27,6 @@ export async function GET(
             userId: true,
           }
         },
-        muxData: true,
         userProgress: {
           where: {
             userId,

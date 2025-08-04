@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { extractYouTubeVideoId, isValidYouTubeUrl } from "@/lib/youtube";
 
 export async function POST(
     req: Request,
@@ -25,31 +26,42 @@ export async function POST(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const { url } = await req.json();
+        const { youtubeUrl } = await req.json();
 
-        if (!url) {
-            return new NextResponse("Missing URL", { status: 400 });
+        if (!youtubeUrl) {
+            return new NextResponse("Missing YouTube URL", { status: 400 });
         }
 
-        // Update chapter with video URL and set videoType to UPLOAD
+        if (!isValidYouTubeUrl(youtubeUrl)) {
+            return new NextResponse("Invalid YouTube URL", { status: 400 });
+        }
+
+        const youtubeVideoId = extractYouTubeVideoId(youtubeUrl);
+
+        if (!youtubeVideoId) {
+            return new NextResponse("Could not extract video ID", { status: 400 });
+        }
+
+        // Update chapter with YouTube video
         await db.chapter.update({
             where: {
                 id: resolvedParams.chapterId,
                 courseId: resolvedParams.courseId,
             },
             data: {
-                videoUrl: url,
-                videoType: "UPLOAD",
-                youtubeVideoId: null, // Clear any YouTube video ID
+                videoUrl: youtubeUrl,
+                videoType: "YOUTUBE",
+                youtubeVideoId: youtubeVideoId,
             }
         });
 
         return NextResponse.json({ 
             success: true,
-            url: url
+            youtubeVideoId,
+            url: youtubeUrl
         });
     } catch (error) {
-        console.log("[CHAPTER_UPLOAD]", error);
+        console.log("[CHAPTER_YOUTUBE_UPLOAD]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 } 

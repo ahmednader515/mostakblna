@@ -30,7 +30,16 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const includeProgress = searchParams.get('includeProgress') === 'true';
-    const { userId } = await auth();
+    
+    // Try to get user, but don't fail if not authenticated
+    let userId = null;
+    try {
+      const authResult = await auth();
+      userId = authResult.userId;
+    } catch (error) {
+      // User is not authenticated, which is fine for the home page
+      console.log("User not authenticated, showing courses without progress");
+    }
 
     const courses = await db.course.findMany({
       where: {
@@ -54,9 +63,9 @@ export async function GET(req: Request) {
             id: true,
           }
         },
-        purchases: includeProgress ? {
+        purchases: includeProgress && userId ? {
           where: {
-            userId: userId || '',
+            userId: userId,
             status: "ACTIVE"
           }
         } : undefined,
@@ -88,7 +97,7 @@ export async function GET(req: Request) {
               }
             });
 
-                        // Get completed quizzes
+            // Get completed quizzes
             const completedQuizResults = await db.quizResult.findMany({
                 where: {
                     studentId: userId,
@@ -119,7 +128,13 @@ export async function GET(req: Request) {
       return NextResponse.json(coursesWithProgress);
     }
 
-    return NextResponse.json(courses);
+    // For unauthenticated users, return courses without progress
+    const coursesWithoutProgress = courses.map(course => ({
+      ...course,
+      progress: 0
+    }));
+
+    return NextResponse.json(coursesWithoutProgress);
   } catch (error) {
     console.log("[COURSES]", error);
     return new NextResponse("Internal Error", { status: 500 });

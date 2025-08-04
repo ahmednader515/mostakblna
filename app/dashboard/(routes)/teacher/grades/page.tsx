@@ -245,13 +245,13 @@ const GradesPage = () => {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">الدورة</label>
+                            <label className="text-sm font-medium">الكورس</label>
                             <Select value={selectedCourse} onValueChange={setSelectedCourse}>
                                 <SelectTrigger>
-                                    <SelectValue placeholder="جميع الدورات" />
+                                    <SelectValue placeholder="جميع الكورسات" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">جميع الدورات</SelectItem>
+                                    <SelectItem value="all">جميع الكورسات</SelectItem>
                                     {courses.map((course) => (
                                         <SelectItem key={course.id} value={course.id}>
                                             {course.title}
@@ -291,7 +291,7 @@ const GradesPage = () => {
                             <TableRow>
                                 <TableHead className="text-right">الطالب</TableHead>
                                 <TableHead className="text-right">الاختبار</TableHead>
-                                <TableHead className="text-right">الدورة</TableHead>
+                                <TableHead className="text-right">الكورس</TableHead>
                                 <TableHead className="text-right">الدرجة</TableHead>
                                 <TableHead className="text-right">النسبة المئوية</TableHead>
                                 <TableHead className="text-right">تاريخ التقديم</TableHead>

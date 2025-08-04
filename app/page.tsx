@@ -47,10 +47,17 @@ export default function HomePage() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        // Fetch courses from API endpoint that includes purchases and calculates progress
-        const response = await fetch("/api/courses?includeProgress=true"); // Assuming an API endpoint or will create one if needed
+        setIsLoading(true);
+        // Fetch courses from public API endpoint
+        const response = await fetch("/api/courses/public");
+        
+        if (!response.ok) {
+          console.error("Failed to fetch courses:", response.status, response.statusText);
+          return;
+        }
+        
         const data = await response.json();
-
+        console.log("Fetched courses:", data); // Debug log
         setCourses(data);
 
       } catch (error) {
@@ -293,8 +300,8 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl font-bold mb-4">الدورات المتاحة</h2>
-            <p className="text-muted-foreground">اكتشف مجموعة متنوعة من الدورات التعليمية المميزة</p>
+            <h2 className="text-3xl font-bold mb-4">الكورسات المتاحة</h2>
+            <p className="text-muted-foreground">اكتشف مجموعة متنوعة من الكورسات التعليمية المميزة</p>
           </motion.div>
 
           <motion.div
@@ -319,49 +326,72 @@ export default function HomePage() {
                 </div>
               ))
             ) : (
-              courses.map((course, index) => (
-                <motion.div
-                  key={course.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="group w-full sm:w-80 md:w-72 lg:w-80 bg-card rounded-xl overflow-hidden border shadow-sm hover:shadow-md transition-all"
-                >
-                  <div className="relative w-full aspect-video">
-                    <Image
-                      src={course.imageUrl || "/placeholder.png"}
-                      alt={course.title}
-                      fill
-                      className="object-cover rounded-t-xl"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold mb-2 line-clamp-2">
-                      {course.title}
-                    </h3>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-                      <BookOpen className="h-4 w-4" />
-                      <span>
-                        {course.chapters?.length || 0} {course.chapters?.length === 1 ? "فصل" : "فصول"}
-                        {course.quizzes && course.quizzes.length > 0 && (
-                          <span className="mr-2">، {course.quizzes.length} {course.quizzes.length === 1 ? "اختبار" : "اختبارات"}</span>
-                        )}
-                      </span>
+              courses.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="max-w-md mx-auto">
+                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                      <BookOpen className="h-8 w-8 text-muted-foreground" />
                     </div>
+                    <h3 className="text-lg font-semibold mb-2">لا توجد كورسات متاحة حالياً</h3>
+                    <p className="text-muted-foreground mb-4">
+                      سيتم إضافة الكورسات قريباً. تحقق من هذه الصفحة لاحقاً للاطلاع على أحدث الكورسات التعليمية.
+                    </p>
                     <Button 
-                      className="w-full bg-[#211FC3] hover:bg-[#211FC3]/90 text-white" 
-                      variant="default"
+                      variant="outline" 
                       asChild
+                      className="bg-[#211FC3] hover:bg-[#211FC3]/90 text-white border-[#211FC3]"
                     >
-                      <Link href={course.chapters && course.chapters.length > 0 ? `/courses/${course.id}/chapters/${course.chapters[0].id}` : `/courses/${course.id}`}>
-                        {course.progress === 100 ? "عرض الدورة" : "عرض الدورة"}
+                      <Link href="/sign-up">
+                        سجل الآن للوصول المبكر
                       </Link>
                     </Button>
                   </div>
-                </motion.div>
-              ))
+                </div>
+              ) : (
+                courses.map((course, index) => (
+                  <motion.div
+                    key={course.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="group w-full sm:w-80 md:w-72 lg:w-80 bg-card rounded-xl overflow-hidden border shadow-sm hover:shadow-md transition-all"
+                  >
+                    <div className="relative w-full aspect-video">
+                      <Image
+                        src={course.imageUrl || "/placeholder.png"}
+                        alt={course.title}
+                        fill
+                        className="object-cover rounded-t-xl"
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-lg font-semibold mb-2 line-clamp-2">
+                        {course.title}
+                      </h3>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+                        <BookOpen className="h-4 w-4" />
+                        <span>
+                          {course.chapters?.length || 0} {course.chapters?.length === 1 ? "فصل" : "فصول"}
+                          {course.quizzes && course.quizzes.length > 0 && (
+                            <span className="mr-2">، {course.quizzes.length} {course.quizzes.length === 1 ? "اختبار" : "اختبارات"}</span>
+                          )}
+                        </span>
+                      </div>
+                      <Button 
+                        className="w-full bg-[#211FC3] hover:bg-[#211FC3]/90 text-white" 
+                        variant="default"
+                        asChild
+                      >
+                        <Link href={course.chapters && course.chapters.length > 0 ? `/courses/${course.id}/chapters/${course.chapters[0].id}` : `/courses/${course.id}`}>
+                          {course.progress === 100 ? "عرض الكورس" : "عرض الكورس"}
+                        </Link>
+                      </Button>
+                    </div>
+                  </motion.div>
+                ))
+              )
             )}
           </motion.div>
         </motion.div>
@@ -472,7 +502,7 @@ export default function HomePage() {
                 <Star className="h-6 w-6 text-[#211FC3]" />
               </div>
               <h3 className="text-xl font-semibold mb-2">جودة عالية</h3>
-              <p className="text-muted-foreground">دورات تعليمية عالية الجودة مع أفضل المدرسين</p>
+              <p className="text-muted-foreground">كورسات تعليمية عالية الجودة مع أفضل المدرسين</p>
             </motion.div>
 
             <motion.div
@@ -500,7 +530,7 @@ export default function HomePage() {
                 <Award className="h-6 w-6 text-[#211FC3]" />
               </div>
               <h3 className="text-xl font-semibold mb-2">شهادات معتمدة</h3>
-              <p className="text-muted-foreground">احصل على شهادات معتمدة عند إكمال الدورات</p>
+              <p className="text-muted-foreground">احصل على شهادات معتمدة عند إكمال الكورسات</p>
             </motion.div>
           </motion.div>
         </motion.div>

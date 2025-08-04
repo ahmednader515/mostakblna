@@ -132,7 +132,7 @@ const QuizzesPage = () => {
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-right">عنوان الاختبار</TableHead>
-                                <TableHead className="text-right">الدورة</TableHead>
+                                <TableHead className="text-right">الكورس</TableHead>
                                 <TableHead className="text-right">الموقع</TableHead>
                                 <TableHead className="text-right">الحالة</TableHead>
                                 <TableHead className="text-right">عدد الأسئلة</TableHead>

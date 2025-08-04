@@ -155,7 +155,7 @@ const UsersPage = () => {
                                      <TableHead className="text-right">رقم هاتف الوالد</TableHead>
                                      <TableHead className="text-right">الدور</TableHead>
                                      <TableHead className="text-right">الرصيد</TableHead>
-                                     <TableHead className="text-right">الدورات المشتراة</TableHead>
+                                     <TableHead className="text-right">الكورسات المشتراة</TableHead>
                                      <TableHead className="text-right">تاريخ التسجيل</TableHead>
                                  </TableRow>
                              </TableHeader>

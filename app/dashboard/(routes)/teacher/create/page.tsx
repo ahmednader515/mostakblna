@@ -54,7 +54,7 @@ const CreatePage = () => {
           });
       
           router.push(`/dashboard/teacher/courses/${response.data.id}`);
-          toast.success("تم إنشاء الدورة");
+          toast.success("تم إنشاء الكورس");
         } catch {
           toast.error("حدث خطأ");
         }
@@ -64,7 +64,7 @@ const CreatePage = () => {
         <div className="max-w-5xl mx-auto flex md:items-center md:justify-center h-full p-6">
             <div>
                 <h1 className="text-2xl">
-                    اسم الدورة
+                    اسم الكورس
                 </h1>
                 <p className="text-sm text-slate-600">
                     ماذا تريد أن تسمي دورتك؟ لا تقلق، يمكنك تغيير هذا لاحقاً.
@@ -82,7 +82,7 @@ const CreatePage = () => {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>
-                                        عنوان الدورة
+                                        عنوان الكورس
                                     </FormLabel>
                                     <FormControl>
                                         <Input
@@ -92,7 +92,7 @@ const CreatePage = () => {
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        ماذا ستعلم في هذه الدورة؟
+                                        ماذا ستعلم في هذه الكورس؟
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

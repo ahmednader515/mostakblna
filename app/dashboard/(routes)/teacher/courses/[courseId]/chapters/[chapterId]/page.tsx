@@ -52,7 +52,7 @@ export default async function ChapterPage({
                     <Link href={`/dashboard/teacher/courses/${courseId}`}>
                         <Button variant="ghost" className="mb-4">
                             <ArrowLeft className="h-4 w-4 mr-2" />
-                            الرجوع إلى إعدادات الدورة
+                            الرجوع إلى إعدادات الكورس
                         </Button>
                     </Link>
                     <h1 className="text-2xl font-medium">

@@ -109,7 +109,7 @@ export const CourseContentForm = ({
                 </div>
             )}
             <div className="font-medium flex items-center justify-between">
-                محتوى الدورة (فصول واختبارات)
+                محتوى الكورس (فصول واختبارات)
                 <div className="flex gap-2">
                     <Button onClick={() => router.push(`/dashboard/teacher/quizzes/create?courseId=${courseId}`)} variant="ghost">
                         <PlusCircle className="h-4 w-4 mr-2" />
@@ -131,7 +131,7 @@ export const CourseContentForm = ({
                 <div className="mt-4 space-y-4">
                     <Input
                         disabled={isUpdating}
-                        placeholder="e.g. 'المقدمة في الدورة'"
+                        placeholder="e.g. 'المقدمة في الكورس'"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />

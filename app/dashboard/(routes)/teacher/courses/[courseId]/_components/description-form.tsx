@@ -56,7 +56,7 @@ export const DescriptionForm = ({
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             await axios.patch(`/api/courses/${courseId}`, values);
-            toast.success("تم تحديث الدورة");
+            toast.success("تم تحديث الكورس");
             toggleEdit();
             router.refresh();
         } catch {
@@ -97,7 +97,7 @@ export const DescriptionForm = ({
                                     <FormControl>
                                         <Textarea 
                                             disabled={isSubmitting}
-                                            placeholder="e.g. 'هذه الدورة عن...'"
+                                            placeholder="e.g. 'هذه الكورس عن...'"
                                             {...field}
                                         />
                                     </FormControl>

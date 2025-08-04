@@ -23,19 +23,22 @@ export const SearchInput = () => {
     };
 
     return (
-        <form onSubmit={onSubmit} className="flex items-center gap-x-2 max-w-sm">
-            <Input
-                name="title"
-                placeholder="ابحث عن دورات..."
-                defaultValue={searchParams.get("title") || ""}
-                className="h-8 text-sm"
-            />
+        <form onSubmit={onSubmit} className="flex items-center gap-x-3 w-full max-w-2xl">
+            <div className="relative flex-1">
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                    name="title"
+                    placeholder="ابحث عن كورسات تعليمية..."
+                    defaultValue={searchParams.get("title") || ""}
+                    className="h-12 pr-10 pl-4 text-base border-2 focus:border-[#211FC3] transition-colors"
+                />
+            </div>
             <Button 
                 type="submit" 
-                size="sm" 
-                className="h-8 px-3 bg-[#211FC3] hover:bg-[#211FC3]/90 text-white"
+                className="h-12 px-6 bg-[#211FC3] hover:bg-[#211FC3]/90 text-white font-semibold transition-all duration-200 hover:scale-105"
             >
-                <Search className="h-4 w-4" />
+                <Search className="h-4 w-4 ml-2" />
+                بحث
             </Button>
         </form>
     );

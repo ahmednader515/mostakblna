@@ -35,7 +35,7 @@ export const SearchInput = () => {
         <form onSubmit={onSubmit} className="flex items-center gap-x-2">
             <Input
                 name="title"
-                placeholder="ابحث عن دورات..."
+                placeholder="ابحث عن كورسات..."
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 className="h-10"

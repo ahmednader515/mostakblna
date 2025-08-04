@@ -10,6 +10,7 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { Eye, EyeOff, ChevronLeft } from "lucide-react";
 import Image from "next/image";
+import { getDashboardUrlByRole } from "@/lib/utils";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -49,8 +50,15 @@ export default function SignInPage() {
       }
 
       toast.success("تم تسجيل الدخول بنجاح");
+      
+      // Get user data to determine role and redirect accordingly
+      const response = await fetch("/api/auth/session");
+      const sessionData = await response.json();
+      const userRole = sessionData?.user?.role || "USER";
+      const dashboardUrl = getDashboardUrlByRole(userRole);
+      
       router.refresh();
-      router.push("/dashboard");
+      router.push(dashboardUrl);
     } catch {
       toast.error("حدث خطأ أثناء تسجيل الدخول");
     } finally {
@@ -87,7 +95,7 @@ export default function SignInPage() {
                 مرحباً بك مرة أخرى
               </h3>
               <p className="text-lg text-muted-foreground max-w-md">
-                سجل دخولك واستكشف الدورات التعليمية المميزة
+                سجل دخولك واستكشف الكورسات التعليمية المميزة
               </p>
             </div>
           </div>

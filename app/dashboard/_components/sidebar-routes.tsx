@@ -12,7 +12,7 @@ const guestRoutes = [
     },
     {
         icon: Compass,
-        label: "استكشف",
+        label: "الكورسات",
         href: "/dashboard/search",
     },
     {
@@ -25,7 +25,7 @@ const guestRoutes = [
 const teacherRoutes = [
     {
         icon: List,
-        label: "الدورات",
+        label: "الكورسات",
         href: "/dashboard/teacher/courses",
     },
     {
@@ -68,7 +68,7 @@ const adminRoutes = [
     },
     {
         icon: BookOpen,
-        label: "إضافة الدورات",
+        label: "إضافة الكورسات",
         href: "/dashboard/admin/add-courses",
     },
 ];

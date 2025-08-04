@@ -393,7 +393,7 @@ const EditQuizPage = () => {
             <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <Label>اختر الدورة</Label>
+                        <Label>اختر الكورس</Label>
                         <Select value={selectedCourse} onValueChange={(value) => {
                             setSelectedCourse(value);
                             // Clear previous data immediately
@@ -404,7 +404,7 @@ const EditQuizPage = () => {
                             }
                         }}>
                             <SelectTrigger>
-                                <SelectValue placeholder="اختر دورة..." />
+                                <SelectValue placeholder="اختر كورس..." />
                             </SelectTrigger>
                             <SelectContent>
                                 {courses.map((course) => (
@@ -428,7 +428,7 @@ const EditQuizPage = () => {
                 {selectedCourse && (
                     <Card>
                         <CardHeader>
-                            <CardTitle>ترتيب الاختبار في الدورة</CardTitle>
+                            <CardTitle>ترتيب الاختبار في الكورس</CardTitle>
                             <p className="text-sm text-muted-foreground">
                                 اسحب الاختبار إلى الموقع المطلوب بين الفصول والاختبارات الموجودة
                             </p>
@@ -439,7 +439,7 @@ const EditQuizPage = () => {
                         <CardContent>
                             {isLoadingCourseItems ? (
                                 <div className="text-center py-8">
-                                    <div className="text-muted-foreground">جاري تحميل محتوى الدورة...</div>
+                                    <div className="text-muted-foreground">جاري تحميل محتوى الكورس...</div>
                                 </div>
                             ) : courseItems.length > 0 ? (
                                 <DragDropContext onDragEnd={handleDragEnd}>
@@ -489,7 +489,7 @@ const EditQuizPage = () => {
                             ) : (
                                 <div className="text-center py-8">
                                     <p className="text-muted-foreground mb-4">
-                                        لا توجد فصول أو اختبارات في هذه الدورة. سيتم إضافة الاختبار في الموقع الأول.
+                                        لا توجد فصول أو اختبارات في هذه الكورس. سيتم إضافة الاختبار في الموقع الأول.
                                     </p>
                                     <div className="p-3 border-2 border-dashed border-blue-300 rounded-lg bg-blue-50">
                                         <div className="flex items-center justify-center space-x-3">

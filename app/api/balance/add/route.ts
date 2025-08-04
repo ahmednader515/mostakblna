@@ -9,6 +9,11 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Prevent students from adding balance
+    if (session.user.role === "USER") {
+      return new NextResponse("Students cannot add balance to their account", { status: 403 });
+    }
+
     const { amount } = await req.json();
 
     if (!amount || amount <= 0) {

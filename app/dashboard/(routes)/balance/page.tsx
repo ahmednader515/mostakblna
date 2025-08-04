@@ -24,6 +24,9 @@ export default function BalancePage() {
   const [transactions, setTransactions] = useState<BalanceTransaction[]>([]);
   const [isLoadingTransactions, setIsLoadingTransactions] = useState(true);
 
+  // Check if user is a student (USER role)
+  const isStudent = session?.user?.role === "USER";
+
   useEffect(() => {
     fetchBalance();
     fetchTransactions();
@@ -104,7 +107,12 @@ export default function BalancePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">إدارة الرصيد</h1>
-          <p className="text-muted-foreground">أضف رصيد إلى حسابك لشراء الدورات</p>
+          <p className="text-muted-foreground">
+            {isStudent 
+              ? "عرض رصيد حسابك وسجل المعاملات" 
+              : "أضف رصيد إلى حسابك لشراء الكورسات"
+            }
+          </p>
         </div>
       </div>
 
@@ -126,38 +134,40 @@ export default function BalancePage() {
         </CardContent>
       </Card>
 
-      {/* Add Balance Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            إضافة رصيد
-          </CardTitle>
-          <CardDescription>
-            أضف مبلغ إلى رصيد حسابك
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-4">
-            <Input
-              type="number"
-              placeholder="أدخل المبلغ"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              min="0"
-              step="0.01"
-              className="flex-1"
-            />
-            <Button 
-              onClick={handleAddBalance}
-              disabled={isLoading}
-              className="bg-[#211FC3] hover:bg-[#211FC3]/90"
-            >
-              {isLoading ? "جاري الإضافة..." : "إضافة الرصيد"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Add Balance Section - Only for non-students */}
+      {!isStudent && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Plus className="h-5 w-5" />
+              إضافة رصيد
+            </CardTitle>
+            <CardDescription>
+              أضف مبلغ إلى رصيد حسابك
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-4">
+              <Input
+                type="number"
+                placeholder="أدخل المبلغ"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                min="0"
+                step="0.01"
+                className="flex-1"
+              />
+              <Button 
+                onClick={handleAddBalance}
+                disabled={isLoading}
+                className="bg-[#211FC3] hover:bg-[#211FC3]/90"
+              >
+                {isLoading ? "جاري الإضافة..." : "إضافة الرصيد"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Transaction History */}
       <Card>
@@ -204,7 +214,7 @@ export default function BalancePage() {
                          {transaction.description.includes("Added") && transaction.type === "DEPOSIT" 
                            ? transaction.description.replace(/Added (\d+(?:\.\d+)?) EGP to balance/, "تم إضافة $1 جنيه إلى الرصيد")
                            : transaction.description.includes("Purchased course:") && transaction.type === "PURCHASE"
-                           ? transaction.description.replace(/Purchased course: (.+)/, "تم شراء الدورة: $1")
+                           ? transaction.description.replace(/Purchased course: (.+)/, "تم شراء الكورس: $1")
                            : transaction.description
                          }
                        </p>
@@ -212,7 +222,7 @@ export default function BalancePage() {
                          {formatDate(transaction.createdAt)}
                        </p>
                        <p className="text-xs text-muted-foreground">
-                         {transaction.type === "DEPOSIT" ? "إيداع" : "شراء دورة"}
+                         {transaction.type === "DEPOSIT" ? "إيداع" : "شراء كورس"}
                        </p>
                      </div>
                   </div>

@@ -37,6 +37,16 @@ const ChapterPage = () => {
   const [courseProgress, setCourseProgress] = useState(0);
   const [hasAccess, setHasAccess] = useState(false);
 
+  console.log("🔍 ChapterPage render:", {
+    chapterId: routeParams.chapterId,
+    courseId: routeParams.courseId,
+    hasChapter: !!chapter,
+    chapterVideoUrl: chapter?.videoUrl,
+    chapterVideoType: chapter?.videoType,
+    loading,
+    hasAccess
+  });
+
   // Helper function to extract filename from URL
   const getFilenameFromUrl = (url: string): string => {
     try {
@@ -69,7 +79,9 @@ const ChapterPage = () => {
         const downloadUrl2 = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = downloadUrl2;
-        link.download = getFilenameFromUrl(url);
+        // Use the chapter's document name if available, otherwise fallback to URL extraction
+        const filename = chapter?.documentName || getFilenameFromUrl(url);
+        link.download = filename;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -78,7 +90,9 @@ const ChapterPage = () => {
         // Fallback to direct download
         const link = document.createElement('a');
         link.href = url;
-        link.download = getFilenameFromUrl(url);
+        // Use the chapter's document name if available, otherwise fallback to URL extraction
+        const filename = chapter?.documentName || getFilenameFromUrl(url);
+        link.download = filename;
         link.target = '_blank';
         document.body.appendChild(link);
         link.click();
@@ -89,7 +103,9 @@ const ChapterPage = () => {
       // Final fallback
       const link = document.createElement('a');
       link.href = url;
-      link.download = getFilenameFromUrl(url);
+      // Use the chapter's document name if available, otherwise fallback to URL extraction
+      const filename = chapter?.documentName || getFilenameFromUrl(url);
+      link.download = filename;
       link.target = '_blank';
       document.body.appendChild(link);
       link.click();
@@ -99,6 +115,7 @@ const ChapterPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log("🔍 ChapterPage fetchData started");
       try {
         const [chapterResponse, progressResponse, accessResponse] = await Promise.all([
           axios.get(`/api/courses/${routeParams.courseId}/chapters/${routeParams.chapterId}`),
@@ -106,24 +123,31 @@ const ChapterPage = () => {
           axios.get(`/api/courses/${routeParams.courseId}/access`)
         ]);
         
+        console.log("🔍 ChapterPage data fetched:", {
+          chapterData: chapterResponse.data,
+          progressData: progressResponse.data,
+          accessData: accessResponse.data
+        });
+        
         setChapter(chapterResponse.data);
         setIsCompleted(chapterResponse.data.userProgress?.[0]?.isCompleted || false);
         setCourseProgress(progressResponse.data.progress);
         setHasAccess(accessResponse.data.hasAccess);
       } catch (error) {
         const axiosError = error as AxiosError;
-        console.error("Error fetching data:", axiosError);
+        console.error("🔍 Error fetching data:", axiosError);
         if (axiosError.response) {
-          console.error("Error response:", axiosError.response.data);
+          console.error("🔍 Error response:", axiosError.response.data);
           toast.error(`فشل تحميل الفصل: ${axiosError.response.data}`);
         } else if (axiosError.request) {
-          console.error("Error request:", axiosError.request);
+          console.error("🔍 Error request:", axiosError.request);
           toast.error("فشل الاتصال بالخادم");
         } else {
-          console.error("Error message:", axiosError.message);
+          console.error("🔍 Error message:", axiosError.message);
           toast.error("حدث خطأ غير معروف");
         }
       } finally {
+        console.log("🔍 ChapterPage fetchData completed, setting loading to false");
         setLoading(false);
       }
     };
@@ -201,9 +225,9 @@ const ChapterPage = () => {
         <div className="text-center space-y-4">
           <Lock className="h-8 w-8 mx-auto text-muted-foreground" />
           <h2 className="text-2xl font-semibold">هذا الفصل مغلق</h2>
-          <p className="text-muted-foreground">شراء الدورة للوصول إلى جميع الفصول</p>
+          <p className="text-muted-foreground">شراء الكورس للوصول إلى جميع الفصول</p>
           <Button onClick={() => router.push(`/courses/${routeParams.courseId}/purchase`)}>
-            شراء الدورة
+            شراء الكورس
           </Button>
         </div>
       </div>
@@ -226,16 +250,30 @@ const ChapterPage = () => {
           {/* Video Player Section */}
           <div className="aspect-video relative bg-black rounded-lg overflow-hidden">
             {chapter.videoUrl ? (
-              <PlyrVideoPlayer
-                videoUrl={chapter.videoType === "UPLOAD" ? chapter.videoUrl : undefined}
-                youtubeVideoId={chapter.videoType === "YOUTUBE" ? chapter.youtubeVideoId || undefined : undefined}
-                videoType={(chapter.videoType as "UPLOAD" | "YOUTUBE") || "UPLOAD"}
-                className="w-full h-full"
-                onEnded={onEnd}
-                onTimeUpdate={(currentTime) => {
-                  console.log("Video time update:", currentTime);
-                }}
-              />
+              (() => {
+                console.log("🔍 Rendering PlyrVideoPlayer with props:", {
+                  videoUrl: chapter.videoType === "UPLOAD" ? chapter.videoUrl : undefined,
+                  youtubeVideoId: chapter.videoType === "YOUTUBE" ? chapter.youtubeVideoId || undefined : undefined,
+                  videoType: (chapter.videoType as "UPLOAD" | "YOUTUBE") || "UPLOAD",
+                  key: `${chapter.id}-${chapter.videoUrl}-${chapter.videoType}`
+                });
+                return (
+                  <PlyrVideoPlayer
+                    key={`${chapter.id}-${chapter.videoUrl}-${chapter.videoType}`}
+                    videoUrl={chapter.videoType === "UPLOAD" ? chapter.videoUrl : undefined}
+                    youtubeVideoId={chapter.videoType === "YOUTUBE" ? chapter.youtubeVideoId || undefined : undefined}
+                    videoType={(chapter.videoType as "UPLOAD" | "YOUTUBE") || "UPLOAD"}
+                    className="w-full h-full"
+                    onEnded={onEnd}
+                    onTimeUpdate={(currentTime) => {
+                      // Only log in development
+                      if (process.env.NODE_ENV === 'development') {
+                        console.log("🔍 Video time update:", currentTime);
+                      }
+                    }}
+                  />
+                );
+              })()
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-white">
                 لا يوجد فيديو متاح

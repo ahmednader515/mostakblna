@@ -118,12 +118,23 @@ export const VideoForm = ({
             {!isEditing && (
                 <div className="relative aspect-video mt-2">
                     {initialData.videoUrl ? (
-                        <PlyrVideoPlayer
-                            videoUrl={initialData.videoType === "UPLOAD" ? initialData.videoUrl : undefined}
-                            youtubeVideoId={initialData.videoType === "YOUTUBE" ? initialData.youtubeVideoId || undefined : undefined}
-                            videoType={(initialData.videoType as "UPLOAD" | "YOUTUBE") || "UPLOAD"}
-                            className="w-full h-full"
-                        />
+                        (() => {
+                            console.log("🔍 VideoForm rendering PlyrVideoPlayer with:", {
+                                videoUrl: initialData.videoUrl,
+                                videoType: initialData.videoType,
+                                youtubeVideoId: initialData.youtubeVideoId,
+                                isUpload: initialData.videoType === "UPLOAD",
+                                isYouTube: initialData.videoType === "YOUTUBE"
+                            });
+                            return (
+                                <PlyrVideoPlayer
+                                    videoUrl={initialData.videoType === "UPLOAD" ? initialData.videoUrl : undefined}
+                                    youtubeVideoId={initialData.videoType === "YOUTUBE" ? initialData.youtubeVideoId || undefined : undefined}
+                                    videoType={(initialData.videoType as "UPLOAD" | "YOUTUBE") || "UPLOAD"}
+                                    className="w-full h-full"
+                                />
+                            );
+                        })()
                     ) : (
                         <div className="flex items-center justify-center h-full bg-muted rounded-md">
                             <Video className="h-8 w-8 text-muted-foreground" />

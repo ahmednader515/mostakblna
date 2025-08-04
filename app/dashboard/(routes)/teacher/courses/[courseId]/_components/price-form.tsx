@@ -46,7 +46,7 @@ export const PriceForm = ({
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            price: initialData?.price || undefined,
+            price: initialData?.price ?? 0,
         }
     });
 
@@ -55,7 +55,7 @@ export const PriceForm = ({
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             await axios.patch(`/api/courses/${courseId}`, values);
-            toast.success("تم تحديث الدورة");
+            toast.success("تم تحديث الكورس");
             toggleEdit();
             router.refresh();
         } catch {
@@ -66,7 +66,7 @@ export const PriceForm = ({
     return (
         <div className="mt-6 border bg-card rounded-md p-4">
             <div className="font-medium flex items-center justify-between">
-                سعر الدورة
+                سعر الكورس
                 <Button onClick={toggleEdit} variant="ghost">
                     {isEditing && (<>إلغاء</>)}
                     {!isEditing && (
@@ -79,9 +79,11 @@ export const PriceForm = ({
             {!isEditing && (
                 <p className={cn(
                     "text-sm mt-2 text-muted-foreground",
-                    !initialData.price && "text-muted-foreground italic"
+                    !initialData.price && initialData.price !== 0 && "text-muted-foreground italic"
                 )}>
-                    {initialData.price
+                    {initialData.price === 0
+                      ? "مجاني"
+                      : initialData.price
                       ? formatPrice(initialData.price)
                       : "لا يوجد سعر"
                     }
@@ -101,8 +103,12 @@ export const PriceForm = ({
                                             type="number"
                                             step="0.01"
                                             disabled={isSubmitting}
-                                            placeholder="ضع سعر للدورة"
-                                            {...field}
+                                            placeholder="ضع سعر للكورس"
+                                            value={field.value || ''}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                field.onChange(value === '' ? 0 : parseFloat(value));
+                                            }}
                                         />
                                     </FormControl>
                                     <FormMessage />

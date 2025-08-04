@@ -124,3 +124,29 @@ export function validateQuizOptions(options: string[]): { isValid: boolean; erro
   
   return { isValid: true };
 }
+
+/**
+ * Get the appropriate dashboard URL based on user role
+ * @param role - The user's role
+ * @returns The dashboard URL for the user's role
+ */
+export function getDashboardUrlByRole(role: string): string {
+  console.log("🔍 getDashboardUrlByRole called with role:", role);
+  
+  let dashboardUrl: string;
+  switch (role) {
+    case "TEACHER":
+      dashboardUrl = "/dashboard/teacher/courses";
+      break;
+    case "ADMIN":
+      dashboardUrl = "/dashboard/admin/users";
+      break;
+    case "USER":
+    default:
+      dashboardUrl = "/dashboard";
+      break;
+  }
+  
+  console.log("🔍 Redirecting to dashboard URL:", dashboardUrl);
+  return dashboardUrl;
+}

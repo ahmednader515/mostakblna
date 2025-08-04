@@ -30,7 +30,7 @@ export const ImageForm = ({
     const onSubmit = async (values: { imageUrl: string }) => {
         try {
             await axios.patch(`/api/courses/${courseId}`, values);
-            toast.success("تم تحديث الدورة");
+            toast.success("تم تحديث الكورس");
             toggleEdit();
             router.refresh();
         } catch {
@@ -41,7 +41,7 @@ export const ImageForm = ({
     return (
         <div className="mt-6 border bg-card rounded-md p-4">
             <div className="font-medium flex items-center justify-between">
-                صورة الدورة
+                صورة الكورس
                 <Button onClick={toggleEdit} variant="ghost">
                     {isEditing && (<>إلغاء</>)}
                     {!isEditing && !initialData.imageUrl && (

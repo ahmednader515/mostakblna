@@ -143,7 +143,7 @@ const AnalyticsPage = () => {
       },
       title: {
         display: true,
-        text: 'إيرادات الدورة',
+        text: 'إيرادات الكورس',
         color: textColor,
         font: {
           family: 'Inter, sans-serif',
@@ -226,7 +226,7 @@ const AnalyticsPage = () => {
           <p className="text-3xl font-bold">{analytics.totalSales}</p>
         </Card>
         <Card className="p-6 bg-amber-50 rounded-lg shadow-sm">
-          <h3 className="text-sm font-medium text-muted-foreground">الدورات المنشورة</h3>
+          <h3 className="text-sm font-medium text-muted-foreground">الكورسات المنشورة</h3>
           <p className="text-3xl font-bold">{analytics.courseCount}</p>
         </Card>
       </div>
@@ -234,7 +234,7 @@ const AnalyticsPage = () => {
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="p-6 rounded-lg shadow-sm">
-          <h3 className="text-lg font-medium mb-4">الإيرادات بالدورة</h3>
+          <h3 className="text-lg font-medium mb-4">الإيرادات بالكورس</h3>
           <div className="h-80">
             <Bar options={barOptions} data={analytics.revenueData} />
           </div>
@@ -249,12 +249,12 @@ const AnalyticsPage = () => {
 
       {/* Course Performance Table */}
       <Card className="p-6 rounded-lg shadow-sm">
-        <h3 className="text-lg font-medium mb-4">أداء الدورة</h3>
+        <h3 className="text-lg font-medium mb-4">أداء الكورس</h3>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b">
-                <th className="text-left py-3 px-2">الدورة</th>
+                <th className="text-left py-3 px-2">الكورس</th>
                 <th className="text-center py-3 px-2">المبيعات</th>
                 <th className="text-center py-3 px-2">الإيرادات</th>
                 <th className="text-center py-3 px-2">معدل الاكتمال</th>

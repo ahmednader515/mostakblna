@@ -158,7 +158,7 @@ const ProgressPage = () => {
                              <TableRow>
                                  <TableHead className="text-right">الاسم</TableHead>
                                  <TableHead className="text-right">رقم الهاتف</TableHead>
-                                 <TableHead className="text-right">الدورات المشتراة</TableHead>
+                                 <TableHead className="text-right">الكورسات المشتراة</TableHead>
                                  <TableHead className="text-right">التقدم</TableHead>
                                  <TableHead className="text-right">الإجراءات</TableHead>
                              </TableRow>
@@ -172,7 +172,7 @@ const ProgressPage = () => {
                                     <TableCell>{user.phoneNumber}</TableCell>
                                     <TableCell>
                                         <Badge variant="outline">
-                                            {user._count.purchases} دورة
+                                            {user._count.purchases} كورس
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
@@ -238,13 +238,13 @@ const ProgressPage = () => {
                             {/* Purchased Courses */}
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>الدورات المشتراة</CardTitle>
+                                    <CardTitle>الكورسات المشتراة</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <Table>
                                                                                  <TableHeader>
                                              <TableRow>
-                                                 <TableHead className="text-right">اسم الدورة</TableHead>
+                                                 <TableHead className="text-right">اسم الكورس</TableHead>
                                                  <TableHead className="text-right">السعر</TableHead>
                                                  <TableHead className="text-right">الحالة</TableHead>
                                                  <TableHead className="text-right">تاريخ الشراء</TableHead>
@@ -283,7 +283,7 @@ const ProgressPage = () => {
                                     <Table>
                                                                                  <TableHeader>
                                              <TableRow>
-                                                 <TableHead className="text-right">الدورة</TableHead>
+                                                 <TableHead className="text-right">الكورس</TableHead>
                                                  <TableHead className="text-right">الفصل</TableHead>
                                                  <TableHead className="text-right">الحالة</TableHead>
                                                  <TableHead className="text-right">آخر تحديث</TableHead>

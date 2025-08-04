@@ -1,6 +1,19 @@
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
+// Helper function to get dashboard URL by role
+function getDashboardUrlByRole(role: string): string {
+  switch (role) {
+    case "TEACHER":
+      return "/dashboard/teacher/courses";
+    case "ADMIN":
+      return "/dashboard/admin/users";
+    case "USER":
+    default:
+      return "/dashboard";
+  }
+}
+
 export default withAuth(
   function middleware(req) {
     const isTeacherRoute = req.nextUrl.pathname.startsWith("/dashboard/dashboard/teacher");
@@ -13,9 +26,11 @@ export default withAuth(
     // Add check for payment status page
     const isPaymentStatusPage = req.nextUrl.pathname.includes("/payment-status");
 
-    // If user is on auth page and is authenticated, redirect to dashboard
+    // If user is on auth page and is authenticated, redirect to appropriate dashboard
     if (isAuthPage && req.nextauth.token) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      const userRole = req.nextauth.token?.role || "USER";
+      const dashboardUrl = getDashboardUrlByRole(userRole);
+      return NextResponse.redirect(new URL(dashboardUrl, req.url));
     }
 
     // If user is not authenticated and trying to access protected routes
@@ -24,9 +39,29 @@ export default withAuth(
       return NextResponse.redirect(new URL("/sign-in", req.url), { status: 302 });
     }
 
+    // Check for admin routes
+    const isAdminRoute = req.nextUrl.pathname.startsWith("/dashboard/admin");
+    const isAdmin = req.nextauth.token?.role === "ADMIN";
+
     // If user is not a teacher but trying to access teacher routes
     if (isTeacherRoute && !isTeacher) {
       return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+
+    // If user is not an admin but trying to access admin routes
+    if (isAdminRoute && !isAdmin) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+
+    // If user accesses main dashboard, redirect to role-specific dashboard
+    if (req.nextUrl.pathname === "/dashboard" && req.nextauth.token) {
+      const userRole = req.nextauth.token?.role || "USER";
+      const dashboardUrl = getDashboardUrlByRole(userRole);
+      
+      // Only redirect if the user's role-specific dashboard is different from the main dashboard
+      if (userRole !== "USER") {
+        return NextResponse.redirect(new URL(dashboardUrl, req.url));
+      }
     }
 
     // Handle POST requests to payment status page

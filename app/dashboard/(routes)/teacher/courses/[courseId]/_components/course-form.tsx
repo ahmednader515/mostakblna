@@ -50,7 +50,7 @@ export const CourseForm = ({
         try {
             setIsLoading(true);
             await axios.patch(`/api/courses/${courseId}`, values);
-            toast.success("تم تحديث الدورة");
+            toast.success("تم تحديث الكورس");
             toggleEdit();
             router.refresh();
         } catch {
@@ -76,14 +76,14 @@ export const CourseForm = ({
     return (
         <div className="mt-6 border bg-slate-100 rounded-md p-4">
             <div className="font-medium flex items-center justify-between">
-                إعدادات الدورة
+                إعدادات الكورس
                 <Button onClick={toggleEdit} variant="ghost">
                     {isEditing ? (
                         <>إلغاء</>
                     ) : (
                         <>
                             <Pencil className="h-4 w-4 mr-2" />
-                            تعديل الدورة
+                            تعديل الكورس
                         </>
                     )}
                 </Button>
@@ -131,7 +131,7 @@ export const CourseForm = ({
                                     <FormControl>
                                         <Textarea
                                             disabled={isLoading}
-                                            placeholder="e.g. 'هذه الدورة سوف تعلمك...'"
+                                            placeholder="e.g. 'هذه الكورس سوف تعلمك...'"
                                             {...field}
                                         />
                                     </FormControl>

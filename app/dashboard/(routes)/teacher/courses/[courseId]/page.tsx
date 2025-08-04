@@ -63,23 +63,58 @@ export default async function CourseIdPage({
 
     const isComplete = requiredFields.every(Boolean);
 
+    // Create detailed completion status
+    const completionStatus = {
+        title: !!course.title,
+        description: !!course.description,
+        imageUrl: !!course.imageUrl,
+        price: course.price !== null && course.price !== undefined,
+        publishedChapters: course.chapters.some(chapter => chapter.isPublished)
+    };
+
     return (
         <>
             {!course.isPublished && (
                 <Banner
                     variant="warning"
-                    label="هذه الدورة غير منشورة. لن تكون مرئية للطلاب."
+                    label="هذه الكورس غير منشورة. لن تكون مرئية للطلاب."
                 />
             )}
             <div className="p-6">
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col gap-y-2">
                         <h1 className="text-2xl font-medium">
-                            إعداد الدورة
+                            إعداد الكورس
                         </h1>
                         <span className="text-sm text-slate-700">
                             أكمل جميع الحقول {completionText}
                         </span>
+                        {!isComplete && (
+                            <div className="text-xs text-muted-foreground mt-2">
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div className={`flex items-center gap-1 ${completionStatus.title ? 'text-green-600' : 'text-red-600'}`}>
+                                        <span>{completionStatus.title ? '✓' : '✗'}</span>
+                                        <span>العنوان</span>
+                                    </div>
+                                    <div className={`flex items-center gap-1 ${completionStatus.description ? 'text-green-600' : 'text-red-600'}`}>
+                                        <span>{completionStatus.description ? '✓' : '✗'}</span>
+                                        <span>الوصف</span>
+                                    </div>
+                                    <div className={`flex items-center gap-1 ${completionStatus.imageUrl ? 'text-green-600' : 'text-red-600'}`}>
+                                        <span>{completionStatus.imageUrl ? '✓' : '✗'}</span>
+                                        <span>الصورة</span>
+                                    </div>
+                                    <div className={`flex items-center gap-1 ${completionStatus.price ? 'text-green-600' : 'text-red-600'}`}>
+                                        <span>{completionStatus.price ? '✓' : '✗'}</span>
+                                        <span>السعر</span>
+                                    </div>
+                                    <div className={`flex items-center gap-1 ${completionStatus.publishedChapters ? 'text-green-600' : 'text-red-600'}`}>
+                                        <span>{completionStatus.publishedChapters ? '✓' : '✗'}</span>
+                                        <span>فصل منشور</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                     <Actions
                         disabled={!isComplete}
@@ -125,7 +160,7 @@ export default async function CourseIdPage({
                             <div className="flex items-center gap-x-2">
                                 <IconBadge icon={LayoutDashboard} />
                                 <h2 className="text-xl">
-                                    إعدادات الدورة
+                                    إعدادات الكورس
                                 </h2>
                             </div>
                             <ImageForm

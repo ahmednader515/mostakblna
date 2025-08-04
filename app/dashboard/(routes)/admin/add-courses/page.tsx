@@ -72,7 +72,7 @@ const AddCoursesPage = () => {
 
     const handleAddCourse = async () => {
         if (!selectedUser || !selectedCourse) {
-            toast.error("يرجى اختيار الطالب والدورة");
+            toast.error("يرجى اختيار الطالب والكورس");
             return;
         }
 
@@ -87,17 +87,17 @@ const AddCoursesPage = () => {
             });
 
             if (response.ok) {
-                toast.success("تم إضافة الدورة للطالب بنجاح");
+                toast.success("تم إضافة الكورس للطالب بنجاح");
                 setIsDialogOpen(false);
                 setSelectedUser(null);
                 setSelectedCourse("");
             } else {
                 const error = await response.json();
-                toast.error(error.message || "حدث خطأ أثناء إضافة الدورة");
+                toast.error(error.message || "حدث خطأ أثناء إضافة الكورس");
             }
         } catch (error) {
             console.error("Error adding course:", error);
-            toast.error("حدث خطأ أثناء إضافة الدورة");
+            toast.error("حدث خطأ أثناء إضافة الكورس");
         } finally {
             setIsAddingCourse(false);
         }
@@ -120,7 +120,7 @@ const AddCoursesPage = () => {
         <div className="p-6 space-y-6">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                    إضافة الدورات للطلاب
+                    إضافة الكورسات للطلاب
                 </h1>
             </div>
 
@@ -168,21 +168,21 @@ const AddCoursesPage = () => {
                                                     onClick={() => setSelectedUser(user)}
                                                 >
                                                     <Plus className="h-4 w-4" />
-                                                    إضافة دورة
+                                                    إضافة كورس
                                                 </Button>
                                             </DialogTrigger>
                                             <DialogContent>
                                                 <DialogHeader>
                                                     <DialogTitle>
-                                                        إضافة دورة لـ {selectedUser?.fullName}
+                                                        إضافة كورس لـ {selectedUser?.fullName}
                                                     </DialogTitle>
                                                 </DialogHeader>
                                                 <div className="space-y-4">
                                                     <div className="space-y-2">
-                                                        <label className="text-sm font-medium">اختر الدورة</label>
+                                                        <label className="text-sm font-medium">اختر الكورس</label>
                                                         <Select value={selectedCourse} onValueChange={setSelectedCourse}>
                                                             <SelectTrigger>
-                                                                <SelectValue placeholder="اختر دورة..." />
+                                                                <SelectValue placeholder="اختر كورس..." />
                                                             </SelectTrigger>
                                                             <SelectContent>
                                                                 {courses.map((course) => (
@@ -213,7 +213,7 @@ const AddCoursesPage = () => {
                                                             onClick={handleAddCourse}
                                                             disabled={!selectedCourse || isAddingCourse}
                                                         >
-                                                            {isAddingCourse ? "جاري الإضافة..." : "إضافة الدورة"}
+                                                            {isAddingCourse ? "جاري الإضافة..." : "إضافة الكورس"}
                                                         </Button>
                                                     </div>
                                                 </div>

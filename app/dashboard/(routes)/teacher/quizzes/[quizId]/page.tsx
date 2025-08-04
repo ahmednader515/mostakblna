@@ -150,7 +150,7 @@ const QuizViewPage = ({ params }: { params: Promise<{ quizId: string }> }) => {
                             
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <h4 className="font-medium mb-1">الدورة</h4>
+                                    <h4 className="font-medium mb-1">الكورس</h4>
                                     <Badge variant="outline">{quiz.course.title}</Badge>
                                 </div>
                                 <div>

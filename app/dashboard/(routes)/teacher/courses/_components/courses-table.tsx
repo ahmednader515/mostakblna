@@ -81,10 +81,10 @@ export function CoursesTable<TData extends { id: string }, TValue>({
             });
 
             if (!response.ok) {
-                throw new Error("فشل حذف الدورة");
+                throw new Error("فشل حذف الكورس");
             }
 
-            toast.success("تم حذف الدورة بنجاح");
+            toast.success("تم حذف الكورس بنجاح");
             router.refresh();
         } catch {
             toast.error("حدث خطأ");
@@ -97,7 +97,7 @@ export function CoursesTable<TData extends { id: string }, TValue>({
                 <div className="relative w-full max-w-sm">
                     <Search className="absolute h-4 w-4 top-3 left-3 text-muted-foreground" />
                     <Input
-                        placeholder="ابحث عن الدورات..."
+                        placeholder="ابحث عن الكورسات..."
                         value={filterValue}
                         onChange={(e) => handleFilterChange(e.target.value)}
                         className="w-full pl-9"
@@ -156,7 +156,7 @@ export function CoursesTable<TData extends { id: string }, TValue>({
                                                     <AlertDialogHeader>
                                                         <AlertDialogTitle>هل أنت متأكد؟</AlertDialogTitle>
                                                         <AlertDialogDescription>
-                                                            لا يمكن التراجع عن هذا العمل. سيتم حذف الدورة وكل محتواها بشكل دائم.
+                                                            لا يمكن التراجع عن هذا العمل. سيتم حذف الكورس وكل محتواها بشكل دائم.
                                                         </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>

@@ -116,7 +116,7 @@ export const CourseSidebar = ({ course }: CourseSidebarProps) => {
     return (
       <div className="h-full border-r flex flex-col overflow-y-auto shadow-lg">
         <div className="p-8 flex flex-col border-b">
-          <h1 className="font-semibold">جاري تحميل الدورة</h1>
+          <h1 className="font-semibold">جاري تحميل الكورس</h1>
         </div>
         <div className="flex items-center justify-center h-full">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>

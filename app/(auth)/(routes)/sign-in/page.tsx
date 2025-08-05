@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/ui/loading-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -159,13 +160,14 @@ export default function SignInPage() {
               </div>
             </div>
 
-            <Button
+            <LoadingButton
               type="submit"
+              loading={isLoading}
+              loadingText="جاري تسجيل الدخول..."
               className="w-full h-10 bg-[#211FC3] hover:bg-[#211FC3]/90 text-white"
-              disabled={isLoading}
             >
-              {isLoading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
-            </Button>
+              تسجيل الدخول
+            </LoadingButton>
           </form>
           <div className="text-center text-sm">
             <span className="text-muted-foreground">ليس لديك حساب؟ </span>

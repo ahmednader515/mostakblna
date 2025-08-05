@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { useNavigationLoading } from "@/hooks/use-navigation-loading";
+import { LoadingSpinner } from "@/components/loading-spinner";
 
 interface SidebarItemProps {
     icon: LucideIcon;
@@ -19,30 +21,39 @@ export const SidebarItem = ({
 
     const pathName = usePathname();
     const router = useRouter();
+    const { isLoading, navigateWithLoading } = useNavigationLoading();
 
     const isActive = pathName === href;
 
-    const onClick = () => {
-        router.push(href);
+    const onClick = async () => {
+        if (!isActive) {
+            await navigateWithLoading(href);
+        }
     }
 
     return (
         <button
         onClick={onClick}
         type="button"
+        disabled={isLoading}
         className={cn(
             "flex items-center gap-x-2 text-muted-foreground text-sm font-[500] rtl:pr-6 ltr:pl-6 transition-all hover:text-primary hover:bg-primary/10",
-            isActive && "text-primary bg-primary/10 hover:bg-primary/10"
+            isActive && "text-primary bg-primary/10 hover:bg-primary/10",
+            isLoading && "opacity-50 cursor-not-allowed"
         )}
         >
         <div className="flex items-center gap-x-2 py-3">
-            <Icon 
-                size={22} 
-                className={cn(
-                    "text-muted-foreground",
-                    isActive && "text-primary"
-                )} 
-            />
+            {isLoading && isActive ? (
+                <LoadingSpinner size="sm" />
+            ) : (
+                <Icon 
+                    size={22} 
+                    className={cn(
+                        "text-muted-foreground",
+                        isActive && "text-primary"
+                    )} 
+                />
+            )}
             {label}
         </div>
 

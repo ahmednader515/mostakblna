@@ -2,17 +2,33 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/ui/loading-button";
 import { ChevronRight, LogOut } from "lucide-react";
 import { CourseMobileSidebar } from "./course-mobile-sidebar";
 import { UserButton } from "@/components/user-button";
 import { useSession, signOut } from "next-auth/react";
+import { useNavigationLoading } from "@/hooks/use-navigation-loading";
+import { useState } from "react";
 
 export const CourseNavbar = () => {
   const router = useRouter();
   const { data: session } = useSession();
+  const { navigateWithLoading } = useNavigationLoading();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const handleLogout = () => {
-    signOut({ callbackUrl: "/" });
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await signOut({ callbackUrl: "/" });
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  const handleBackToDashboard = async () => {
+    await navigateWithLoading("/dashboard");
   };
 
   return (
@@ -20,7 +36,7 @@ export const CourseNavbar = () => {
       <div className="flex items-center">
         <CourseMobileSidebar />
         <Button
-          onClick={() => router.push("/dashboard")}
+          onClick={handleBackToDashboard}
           variant="ghost"
           size="sm"
           className="flex items-center gap-x-2 hover:bg-slate-100 rtl:mr-2 ltr:ml-2"
@@ -31,15 +47,17 @@ export const CourseNavbar = () => {
       </div>
       <div className="flex items-center gap-x-4 rtl:mr-auto ltr:ml-auto">
         {session?.user && (
-          <Button 
+          <LoadingButton 
             size="sm" 
             variant="ghost" 
             onClick={handleLogout}
+            loading={isLoggingOut}
+            loadingText="جاري تسجيل الخروج..."
             className="text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors duration-200 ease-in-out"
           >
             <LogOut className="h-4 w-4 rtl:ml-2 ltr:mr-2"/>
             تسجيل الخروج
-          </Button>
+          </LoadingButton>
         )}
         <UserButton />
       </div>

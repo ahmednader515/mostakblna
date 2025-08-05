@@ -43,6 +43,11 @@ const teacherRoutes = [
         label: "الاحصائيات",
         href: "/dashboard/teacher/analytics",
     },
+    {
+        icon: Shield,
+        label: "إنشاء حساب طالب",
+        href: "/dashboard/teacher/create-account",
+    },
 ];
 
 const adminRoutes = [
@@ -50,6 +55,11 @@ const adminRoutes = [
         icon: Users,
         label: "إدارة المستخدمين",
         href: "/dashboard/admin/users",
+    },
+    {
+        icon: Shield,
+        label: "إنشاء حساب طالب",
+        href: "/dashboard/admin/create-account",
     },
     {
         icon: Eye,

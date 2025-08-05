@@ -120,7 +120,7 @@ export default function HomePage() {
             <div className="relative w-64 h-64 md:w-80 md:h-80">
               <Image
                 src="/teacher-image.png"
-                alt="نادر غزال"
+                alt="حسن عبدالوهاب"
                 fill
                 priority
                 className="object-cover rounded-full border-4 border-[#211FC3]/20 shadow-lg"
@@ -502,7 +502,7 @@ export default function HomePage() {
                 <Star className="h-6 w-6 text-[#211FC3]" />
               </div>
               <h3 className="text-xl font-semibold mb-2">جودة عالية</h3>
-              <p className="text-muted-foreground">كورسات تعليمية عالية الجودة مع أفضل المدرسين</p>
+              <p className="text-muted-foreground">أفضل منصة متخصصة لكورسات اللغة العربية</p>
             </motion.div>
 
             <motion.div
@@ -516,7 +516,7 @@ export default function HomePage() {
                 <Users className="h-6 w-6 text-[#211FC3]" />
               </div>
               <h3 className="text-xl font-semibold mb-2">مجتمع نشط</h3>
-              <p className="text-muted-foreground">انضم إلى مجتمع من الطلاب النشطين والمتحمسين</p>
+              <p className="text-muted-foreground">انضم إلى مجتمع من الطلاب النشطين والمتفوقين والأوائل</p>
             </motion.div>
 
             <motion.div
@@ -529,8 +529,8 @@ export default function HomePage() {
               <div className="w-12 h-12 bg-[#211FC3]/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Award className="h-6 w-6 text-[#211FC3]" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">شهادات معتمدة</h3>
-              <p className="text-muted-foreground">احصل على شهادات معتمدة عند إكمال الكورسات</p>
+              <h3 className="text-xl font-semibold mb-2">شهادات تقدير</h3>
+              <p className="text-muted-foreground">احصل على شهادات تقدير عند إكمال الكورسات</p>
             </motion.div>
           </motion.div>
         </motion.div>
@@ -558,15 +558,6 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="py-6 border-t">
-        <div className="container mx-auto px-4">
-          <div className="text-center text-muted-foreground">
-            <p>© {new Date().getFullYear()} Mordesu Studio. جميع الحقوق محفوظة</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 } 

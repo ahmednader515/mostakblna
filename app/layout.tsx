@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from 'next/font/local';
 import "./globals.css";
 import { Providers } from "@/components/providers";
+import { Footer } from "@/components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,14 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang="ar" dir="rtl" className={`${geistSans.variable} ${geistMono.variable} ${playpenSansArabic.variable}`}>
       <body suppressHydrationWarning className="font-playpen-sans-arabic">
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="min-h-screen flex flex-col">
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </Providers>
       </body>
     </html>
   );

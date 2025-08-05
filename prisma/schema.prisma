@@ -68,8 +68,8 @@ model Chapter {
   videoUrl String? @db.Text
   videoType String? @default("UPLOAD") // "UPLOAD" or "YOUTUBE"
   youtubeVideoId String? // Store YouTube video ID
-  documentUrl String? @db.Text // Store document URL
-  documentName String? // Store original document filename
+  documentUrl String? @db.Text // Store document URL (legacy - for backward compatibility)
+  documentName String? // Store original document filename (legacy - for backward compatibility)
   position Int
   isPublished Boolean @default(false)
   isFree Boolean @default(false)
@@ -78,11 +78,27 @@ model Chapter {
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   userProgress UserProgress[]
+  attachments ChapterAttachment[] // New relation for multiple documents
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([courseId])
+}
+
+model ChapterAttachment {
+  id String @id @default(uuid())
+  name String
+  url String @db.Text
+  position Int @default(0)
+
+  chapterId String
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([chapterId])
 }
 
 model UserProgress {

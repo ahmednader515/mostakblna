@@ -98,9 +98,18 @@ const CoursesPage = async () => {
     }
   });
 
-  const totalQuizzes = await db.quizResult.count({
+  // Get total quizzes from courses the student has purchased
+  const totalQuizzes = await db.quiz.count({
     where: {
-      studentId: session.user.id
+      course: {
+        purchases: {
+          some: {
+            userId: session.user.id,
+            status: "ACTIVE"
+          }
+        }
+      },
+      isPublished: true
     }
   });
 
@@ -118,18 +127,30 @@ const CoursesPage = async () => {
   const uniqueQuizIds = new Set(completedQuizResults.map(result => result.quizId));
   const completedQuizzes = uniqueQuizIds.size;
 
-  // Calculate average score from quiz results
+  // Calculate average score from quiz results (using best attempt for each quiz)
   const quizResults = await db.quizResult.findMany({
     where: {
       studentId: session.user.id
     },
     select: {
-      score: true
+      quizId: true,
+      percentage: true
+    },
+    orderBy: {
+      percentage: 'desc' // Order by percentage descending to get best attempts first
     }
   });
 
-  const averageScore = quizResults.length > 0 
-    ? quizResults.reduce((sum, result) => sum + (result.score || 0), 0) / quizResults.length 
+  // Get only the best attempt for each quiz
+  const bestAttempts = new Map();
+  quizResults.forEach(result => {
+    if (!bestAttempts.has(result.quizId)) {
+      bestAttempts.set(result.quizId, result.percentage);
+    }
+  });
+
+  const averageScore = bestAttempts.size > 0 
+    ? Math.round(Array.from(bestAttempts.values()).reduce((sum, percentage) => sum + percentage, 0) / bestAttempts.size)
     : 0;
 
   const studentStats: StudentStats = {
@@ -138,7 +159,7 @@ const CoursesPage = async () => {
     completedChapters,
     totalQuizzes,
     completedQuizzes,
-    averageScore: Math.round(averageScore)
+    averageScore
   };
 
   const courses = await db.course.findMany({

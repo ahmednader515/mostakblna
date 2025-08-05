@@ -31,6 +31,11 @@ export async function GET(
           where: {
             userId,
           }
+        },
+        attachments: {
+          orderBy: {
+            position: 'asc',
+          },
         }
       }
     });

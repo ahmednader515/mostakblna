@@ -23,6 +23,13 @@ interface Chapter {
   previousChapterId?: string;
   nextContentType?: 'chapter' | 'quiz' | null;
   previousContentType?: 'chapter' | 'quiz' | null;
+  attachments?: {
+    id: string;
+    name: string;
+    url: string;
+    position: number;
+    createdAt: Date;
+  }[];
   userProgress?: {
     isCompleted: boolean;
   }[];
@@ -110,6 +117,50 @@ const ChapterPage = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    }
+  };
+
+  // Helper function to download attachment
+  const downloadAttachment = async (url: string, name: string) => {
+    try {
+      // For uploadthing URLs, we'll use a different approach
+      const response = await fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+      });
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = name || getFilenameFromUrl(url);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        window.URL.revokeObjectURL(downloadUrl);
+        toast.success("تم بدء تحميل الملف");
+      } else {
+        throw new Error('Failed to fetch file');
+      }
+    } catch (error) {
+      console.error('Download failed:', error);
+      
+      // If CORS fails or any other error, use the browser's native download behavior
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = name || getFilenameFromUrl(url);
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      
+      // Try to trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast.success("تم فتح الملف في تبويب جديد للتحميل");
     }
   };
 
@@ -308,12 +359,53 @@ const ChapterPage = () => {
               <div dangerouslySetInnerHTML={{ __html: chapter.description || "" }} />
             </div>
             
-            {/* Document Section */}
-            {chapter.documentUrl && (
+            {/* Attachments Section */}
+            {(chapter.attachments && chapter.attachments.length > 0) && (
               <div className="mt-6 p-4 border rounded-lg bg-card">
                 <div className="flex items-center gap-2 mb-3">
                   <FileText className="h-5 w-5 text-muted-foreground" />
                   <h3 className="text-lg font-semibold">مستندات الفصل</h3>
+                </div>
+                <div className="space-y-2">
+                  {chapter.attachments.map((attachment) => (
+                    <div key={attachment.id} className="flex items-center p-3 w-full bg-secondary/50 border-secondary/50 border text-secondary-foreground rounded-md">
+                      <FileText className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <p className="text-sm font-medium truncate">
+                          {attachment.name || getFilenameFromUrl(attachment.url)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">مستند الفصل</p>
+                      </div>
+                      <div className="mr-auto flex items-center gap-2 flex-shrink-0">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => window.open(attachment.url, '_blank')}
+                        >
+                          عرض
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => downloadAttachment(attachment.url, attachment.name)}
+                          className="flex items-center gap-1"
+                        >
+                          <Download className="h-3 w-3" />
+                          تحميل
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Legacy Document Section (for backward compatibility) */}
+            {chapter.documentUrl && !chapter.attachments?.length && (
+              <div className="mt-6 p-4 border rounded-lg bg-card">
+                <div className="flex items-center gap-2 mb-3">
+                  <FileText className="h-5 w-5 text-muted-foreground" />
+                  <h3 className="text-lg font-semibold">مستند الفصل</h3>
                 </div>
                 <div className="flex items-center p-3 w-full bg-secondary/50 border-secondary/50 border text-secondary-foreground rounded-md">
                   <FileText className="h-4 w-4 mr-2 flex-shrink-0" />

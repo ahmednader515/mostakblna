@@ -3,9 +3,9 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { ChapterForm } from "./_components/chapter-form";
 import { VideoForm } from "./_components/video-form";
-import { DocumentForm } from "./_components/document-form";
+import { AttachmentsForm } from "./_components/attachments-form";
 import Link from "next/link";
-import { ArrowLeft, Video, FileText } from "lucide-react";
+import { ArrowLeft, Video, Files } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IconBadge } from "@/components/icon-badge";
 
@@ -27,6 +27,13 @@ export default async function ChapterPage({
         where: {
             id: chapterId,
             courseId: courseId
+        },
+        include: {
+            attachments: {
+                orderBy: {
+                    position: 'asc',
+                },
+            },
         }
     });
 
@@ -87,12 +94,12 @@ export default async function ChapterPage({
                     </div>
                     <div>
                         <div className="flex items-center gap-x-2">
-                            <IconBadge icon={FileText} />
+                            <IconBadge icon={Files} />
                             <h2 className="text-xl">
-                                إضافة مستند
+                                مستندات الفصل
                             </h2>
                         </div>
-                        <DocumentForm
+                        <AttachmentsForm
                             initialData={chapter}
                             courseId={courseId}
                             chapterId={chapterId}

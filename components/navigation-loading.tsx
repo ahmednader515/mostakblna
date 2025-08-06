@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { cn } from "@/lib/utils";
@@ -11,7 +11,7 @@ interface NavigationLoadingProps {
   progressColor?: string;
 }
 
-export const NavigationLoading = ({ 
+const NavigationLoadingContent = ({ 
   className,
   showProgress = true,
   progressColor = "#211FC3"
@@ -77,5 +77,13 @@ export const NavigationLoading = ({
         </div>
       </div>
     </div>
+  );
+};
+
+export const NavigationLoading = (props: NavigationLoadingProps) => {
+  return (
+    <Suspense fallback={null}>
+      <NavigationLoadingContent {...props} />
+    </Suspense>
   );
 }; 

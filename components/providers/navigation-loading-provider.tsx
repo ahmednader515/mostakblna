@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { NavigationLoading } from "@/components/navigation-loading";
 
@@ -19,7 +19,7 @@ export const useNavigationLoading = () => {
   return context;
 };
 
-export const NavigationLoadingProvider = ({ children }: { children: React.ReactNode }) => {
+const NavigationLoadingProviderContent = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -41,5 +41,15 @@ export const NavigationLoadingProvider = ({ children }: { children: React.ReactN
       {children}
       <NavigationLoading />
     </NavigationLoadingContext.Provider>
+  );
+};
+
+export const NavigationLoadingProvider = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Suspense fallback={null}>
+      <NavigationLoadingProviderContent>
+        {children}
+      </NavigationLoadingProviderContent>
+    </Suspense>
   );
 }; 

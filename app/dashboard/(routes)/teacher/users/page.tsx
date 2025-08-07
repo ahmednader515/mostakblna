@@ -82,14 +82,21 @@ const UsersPage = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch("/api/admin/users");
+            const response = await fetch("/api/teacher/users");
             if (response.ok) {
                 const data = await response.json();
                 setUsers(data);
+            } else {
+                console.error("Error fetching users:", response.status, response.statusText);
+                if (response.status === 403) {
+                    toast.error("ليس لديك صلاحية للوصول إلى هذه الصفحة");
+                } else {
+                    toast.error("حدث خطأ في تحميل الطلاب");
+                }
             }
         } catch (error) {
             console.error("Error fetching users:", error);
-            toast.error("حدث خطأ في تحميل المستخدمين");
+            toast.error("حدث خطأ في تحميل الطلاب");
         } finally {
             setLoading(false);
         }
@@ -110,7 +117,7 @@ const UsersPage = () => {
         if (!editingUser) return;
 
         try {
-            const response = await fetch(`/api/admin/users/${editingUser.id}`, {
+            const response = await fetch(`/api/teacher/users/${editingUser.id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -119,24 +126,34 @@ const UsersPage = () => {
             });
 
             if (response.ok) {
-                toast.success("تم تحديث المستخدم بنجاح");
+                const userType = editingUser.role === "TEACHER" ? "المعلم" : editingUser.role === "ADMIN" ? "المشرف" : "الطالب";
+                toast.success(`تم تحديث بيانات ${userType} بنجاح`);
                 setIsEditDialogOpen(false);
                 setEditingUser(null);
                 fetchUsers(); // Refresh the list
             } else {
                 const error = await response.text();
-                toast.error(error || "حدث خطأ في تحديث المستخدم");
+                console.error("Error updating user:", response.status, error);
+                if (response.status === 403) {
+                    toast.error("ليس لديك صلاحية لتعديل البيانات");
+                } else if (response.status === 404) {
+                    toast.error("المستخدم غير موجود");
+                } else if (response.status === 400) {
+                    toast.error(error || "بيانات غير صحيحة");
+                } else {
+                    toast.error("حدث خطأ في تحديث البيانات");
+                }
             }
         } catch (error) {
             console.error("Error updating user:", error);
-            toast.error("حدث خطأ في تحديث المستخدم");
+            toast.error("حدث خطأ في تحديث بيانات الطالب");
         }
     };
 
     const handleDeleteUser = async (userId: string) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`/api/admin/users/${userId}`, {
+            const response = await fetch(`/api/teacher/users/${userId}`, {
                 method: "DELETE",
             });
 
@@ -145,11 +162,18 @@ const UsersPage = () => {
                 fetchUsers(); // Refresh the list
             } else {
                 const error = await response.text();
-                toast.error(error || "حدث خطأ في حذف المستخدم");
+                console.error("Error deleting user:", response.status, error);
+                if (response.status === 403) {
+                    toast.error("ليس لديك صلاحية لحذف المستخدم");
+                } else if (response.status === 404) {
+                    toast.error("المستخدم غير موجود");
+                } else {
+                    toast.error(error || "حدث خطأ في حذف المستخدم");
+                }
             }
         } catch (error) {
             console.error("Error deleting user:", error);
-            toast.error("حدث خطأ في حذف المستخدم");
+            toast.error("حدث خطأ في حذف الطالب");
         } finally {
             setIsDeleting(false);
         }
@@ -160,8 +184,16 @@ const UsersPage = () => {
         user.phoneNumber.includes(searchTerm)
     );
 
-    const staffUsers = filteredUsers.filter(user => user.role === "ADMIN" || user.role === "TEACHER");
+    // Separate users by role
     const studentUsers = filteredUsers.filter(user => user.role === "USER");
+    const staffUsers = filteredUsers.filter(user => user.role === "TEACHER" || user.role === "ADMIN");
+
+    // Debug logging
+    console.log("All users:", users);
+    console.log("Filtered users:", filteredUsers);
+    console.log("Student users:", studentUsers);
+    console.log("Staff users:", staffUsers);
+    console.log("Admin users:", filteredUsers.filter(user => user.role === "ADMIN"));
 
     if (loading) {
         return (
@@ -218,8 +250,8 @@ const UsersPage = () => {
                                             <Badge 
                                                 variant="secondary"
                                                 className={
-                                                    user.role === "ADMIN" ? "bg-orange-600 text-white hover:bg-orange-700" : 
                                                     user.role === "TEACHER" ? "bg-blue-600 text-white hover:bg-blue-700" : 
+                                                    user.role === "ADMIN" ? "bg-orange-600 text-white hover:bg-orange-700" : 
                                                     ""
                                                 }
                                             >
@@ -249,9 +281,9 @@ const UsersPage = () => {
                                                     </DialogTrigger>
                                                     <DialogContent>
                                                         <DialogHeader>
-                                                            <DialogTitle>تعديل المستخدم</DialogTitle>
+                                                            <DialogTitle>تعديل بيانات {user.role === "TEACHER" ? "المعلم" : "المشرف"}</DialogTitle>
                                                             <DialogDescription>
-                                                                قم بتعديل معلومات المستخدم
+                                                                قم بتعديل معلومات {user.role === "TEACHER" ? "المعلم" : "المشرف"}
                                                             </DialogDescription>
                                                         </DialogHeader>
                                                         <div className="grid gap-4 py-4">
@@ -335,7 +367,7 @@ const UsersPage = () => {
                                                         <AlertDialogHeader>
                                                             <AlertDialogTitle>هل أنت متأكد؟</AlertDialogTitle>
                                                             <AlertDialogDescription>
-                                                                هذا الإجراء لا يمكن التراجع عنه. سيتم حذف المستخدم وجميع البيانات المرتبطة به نهائياً.
+                                                                هذا الإجراء لا يمكن التراجع عنه. سيتم حذف {user.role === "TEACHER" ? "المعلم" : "المشرف"} وجميع البيانات المرتبطة به نهائياً.
                                                             </AlertDialogDescription>
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>
@@ -397,7 +429,10 @@ const UsersPage = () => {
                                         <TableCell>{user.phoneNumber}</TableCell>
                                         <TableCell>{user.parentPhoneNumber}</TableCell>
                                         <TableCell>
-                                            <Badge variant="secondary">
+                                            <Badge 
+                                                variant="secondary"
+                                                className="bg-green-600 text-white hover:bg-green-700"
+                                            >
                                                 طالب
                                             </Badge>
                                         </TableCell>
@@ -433,9 +468,9 @@ const UsersPage = () => {
                                                     </DialogTrigger>
                                                     <DialogContent>
                                                         <DialogHeader>
-                                                            <DialogTitle>تعديل المستخدم</DialogTitle>
+                                                            <DialogTitle>تعديل بيانات الطالب</DialogTitle>
                                                             <DialogDescription>
-                                                                قم بتعديل معلومات المستخدم
+                                                                قم بتعديل معلومات الطالب
                                                             </DialogDescription>
                                                         </DialogHeader>
                                                         <div className="grid gap-4 py-4">
@@ -519,7 +554,7 @@ const UsersPage = () => {
                                                         <AlertDialogHeader>
                                                             <AlertDialogTitle>هل أنت متأكد؟</AlertDialogTitle>
                                                             <AlertDialogDescription>
-                                                                هذا الإجراء لا يمكن التراجع عنه. سيتم حذف المستخدم وجميع البيانات المرتبطة به نهائياً.
+                                                                هذا الإجراء لا يمكن التراجع عنه. سيتم حذف الطالب وجميع البيانات المرتبطة به نهائياً.
                                                             </AlertDialogDescription>
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>
@@ -542,8 +577,18 @@ const UsersPage = () => {
                     </CardContent>
                 </Card>
             )}
+
+            {staffUsers.length === 0 && studentUsers.length === 0 && !loading && (
+                <Card>
+                    <CardContent className="p-6">
+                        <div className="text-center text-muted-foreground">
+                            لا يوجد مستخدمين مسجلين حالياً
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
         </div>
     );
 };
 
-export default UsersPage; 
+export default UsersPage;

@@ -44,6 +44,11 @@ const teacherRoutes = [
         href: "/dashboard/teacher/analytics",
     },
     {
+        icon: Users,
+        label: "إدارة الطلاب",
+        href: "/dashboard/teacher/users",
+    },
+    {
         icon: Shield,
         label: "إنشاء حساب طالب",
         href: "/dashboard/teacher/create-account",

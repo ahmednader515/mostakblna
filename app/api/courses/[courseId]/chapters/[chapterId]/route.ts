@@ -152,4 +152,55 @@ export async function PATCH(
         console.log("[CHAPTER_ID]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
+}
+
+export async function DELETE(
+    req: Request,
+    { params }: { params: Promise<{ courseId: string; chapterId: string }> }
+) {
+    try {
+        const { userId } = await auth();
+        const resolvedParams = await params;
+
+        if (!userId) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        // Check if user owns the course
+        const courseOwner = await db.course.findUnique({
+            where: {
+                id: resolvedParams.courseId,
+                userId: userId,
+            }
+        });
+
+        if (!courseOwner) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        // Check if chapter exists
+        const existingChapter = await db.chapter.findUnique({
+            where: {
+                id: resolvedParams.chapterId,
+                courseId: resolvedParams.courseId,
+            }
+        });
+
+        if (!existingChapter) {
+            return new NextResponse("Chapter not found", { status: 404 });
+        }
+
+        // Delete the chapter (this will cascade delete related data due to Prisma relations)
+        await db.chapter.delete({
+            where: {
+                id: resolvedParams.chapterId,
+                courseId: resolvedParams.courseId,
+            }
+        });
+
+        return new NextResponse("Chapter deleted successfully", { status: 200 });
+    } catch (error) {
+        console.error("[CHAPTER_DELETE]", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }
 } 

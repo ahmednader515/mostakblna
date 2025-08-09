@@ -51,13 +51,8 @@ export const DocumentForm = ({
         try {
             const relative = `/api/courses/${courseId}/chapters/${chapterId}/document/download`;
             const absoluteUrl = typeof window !== 'undefined' ? new URL(relative, window.location.origin).toString() : relative;
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = absoluteUrl;
-            document.body.appendChild(iframe);
-            setTimeout(() => {
-                try { document.body.removeChild(iframe); } catch {}
-            }, 10000);
+            // Navigate directly to download URL to leverage WebView native download handling
+            window.location.href = absoluteUrl;
         } catch (error) {
             console.error('Download failed:', error);
             const link = document.createElement('a');

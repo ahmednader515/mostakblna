@@ -79,18 +79,11 @@ const ChapterPage = () => {
     try {
       const relative = `/api/courses/${routeParams.courseId}/chapters/${routeParams.chapterId}/document/download`;
       const absoluteUrl = typeof window !== 'undefined' ? new URL(relative, window.location.origin).toString() : relative;
-      // Trigger native download flow (better for Android WebViews) via hidden iframe
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = absoluteUrl;
-      document.body.appendChild(iframe);
-      // Clean up after a short delay
-      setTimeout(() => {
-        try { document.body.removeChild(iframe); } catch {}
-      }, 10000);
+      // Navigate directly to the download URL (more reliable for Android WebViews)
+      window.location.href = absoluteUrl;
     } catch (error) {
       console.error('Download failed:', error);
-      // Final fallback: open original URL
+      // Fallback: open original URL
       const link = document.createElement('a');
       link.href = url;
       link.target = '_blank';

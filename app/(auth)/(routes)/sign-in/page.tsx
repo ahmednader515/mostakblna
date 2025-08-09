@@ -53,13 +53,18 @@ export default function SignInPage() {
       toast.success("تم تسجيل الدخول بنجاح");
       
       // Get user data to determine role and redirect accordingly
-      const response = await fetch("/api/auth/session");
+      const response = await fetch("/api/auth/session", { cache: "no-store" });
       const sessionData = await response.json();
       const userRole = sessionData?.user?.role || "USER";
       const dashboardUrl = getDashboardUrlByRole(userRole);
-      
-      router.refresh();
-      router.push(dashboardUrl);
+
+      // Force a full reload to ensure fresh session on the dashboard
+      const target = `${dashboardUrl}?t=${Date.now()}`;
+      if (typeof window !== "undefined") {
+        window.location.replace(target);
+      } else {
+        router.replace(target);
+      }
     } catch {
       toast.error("حدث خطأ أثناء تسجيل الدخول");
     } finally {

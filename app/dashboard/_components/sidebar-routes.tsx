@@ -83,12 +83,12 @@ const adminRoutes = [
     },
     {
         icon: BookOpen,
-        label: "إضافة الكورسات",
+        label: "اضافة و حذف الكورسات",
         href: "/dashboard/admin/add-courses",
     },
 ];
 
-export const SidebarRoutes = () => {
+export const SidebarRoutes = ({ closeOnClick = false }: { closeOnClick?: boolean }) => {
     const pathName = usePathname();
 
     const isTeacherPage = pathName?.includes("/dashboard/teacher");
@@ -98,7 +98,13 @@ export const SidebarRoutes = () => {
     return (
         <div className="flex flex-col w-full pt-0">
             {routes.map((route) => (
-                <SidebarItem key={route.href} icon={route.icon} label={route.label} href={route.href} />
+                <SidebarItem
+                  key={route.href}
+                  icon={route.icon}
+                  label={route.label}
+                  href={route.href}
+                  closeOnClick={closeOnClick}
+                />
             ))}
         </div>
     );

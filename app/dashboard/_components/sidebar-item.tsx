@@ -4,48 +4,42 @@ import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useNavigationLoading } from "@/hooks/use-navigation-loading";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { SheetClose } from "@/components/ui/sheet";
 
 interface SidebarItemProps {
     icon: LucideIcon;
     label: string;
     href: string;
+    closeOnClick?: boolean;
 }
 
 export const SidebarItem = ({
     icon: Icon,
     label,
-    href
+    href,
+    closeOnClick = false
 }: SidebarItemProps) => {
 
     const pathName = usePathname();
     const router = useRouter();
-    const { isLoading, navigateWithLoading } = useNavigationLoading();
+    
 
     const isActive = pathName === href;
 
-    const onClick = async () => {
-        if (!isActive) {
-            await navigateWithLoading(href);
-        }
+    const onClick = () => {
+        if (!isActive) router.push(href);
     }
 
-    return (
+    const ButtonEl = (
         <button
-        onClick={onClick}
-        type="button"
-        disabled={isLoading}
-        className={cn(
-            "flex items-center gap-x-2 text-muted-foreground text-sm font-[500] rtl:pr-6 ltr:pl-6 transition-all hover:text-primary hover:bg-primary/10",
-            isActive && "text-primary bg-primary/10 hover:bg-primary/10",
-            isLoading && "opacity-50 cursor-not-allowed"
-        )}
+            onClick={onClick}
+            type="button"
+            className={cn(
+                "flex items-center gap-x-2 text-muted-foreground text-sm font-[500] rtl:pr-6 ltr:pl-6 transition-all hover:text-primary hover:bg-primary/10",
+                isActive && "text-primary bg-primary/10 hover:bg-primary/10"
+            )}
         >
-        <div className="flex items-center gap-x-2 py-3">
-            {isLoading && isActive ? (
-                <LoadingSpinner size="sm" />
-            ) : (
+            <div className="flex items-center gap-x-2 py-3">
                 <Icon 
                     size={22} 
                     className={cn(
@@ -53,16 +47,23 @@ export const SidebarItem = ({
                         isActive && "text-primary"
                     )} 
                 />
-            )}
-            {label}
-        </div>
+                {label}
+            </div>
 
-        <div 
-            className={cn(
-                "rtl:mr-auto ltr:ml-auto opacity-0 border-2 border-primary h-full transition-all",
-                isActive && "opacity-100"
-            )}
-        />
+            <div 
+                className={cn(
+                    "rtl:mr-auto ltr:ml-auto opacity-0 border-2 border-primary h-full transition-all",
+                    isActive && "opacity-100"
+                )}
+            />
         </button>
-    )
+    );
+
+    return closeOnClick ? (
+        <SheetClose asChild>
+            {ButtonEl}
+        </SheetClose>
+    ) : (
+        ButtonEl
+    );
 }

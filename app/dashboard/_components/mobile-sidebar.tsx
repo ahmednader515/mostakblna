@@ -23,7 +23,7 @@ export const MobileSidebar = () => {
                         <X className="h-6 w-6" />
                     </SheetClose>
                 </div>
-                <Sidebar />
+                <Sidebar closeOnClick />
             </SheetContent>
         </Sheet>
     );

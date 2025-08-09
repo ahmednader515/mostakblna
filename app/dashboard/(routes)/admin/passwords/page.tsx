@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Eye, Edit, Search, EyeOff } from "lucide-react";
 import { toast } from "sonner";
@@ -144,67 +144,17 @@ const PasswordsPage = () => {
                                             </Badge>
                                         </TableCell>
                                         <TableCell>
-                                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                                                <DialogTrigger asChild>
-                                                    <Button 
-                                                        size="sm" 
-                                                        variant="outline"
-                                                        onClick={() => setSelectedUser(user)}
-                                                    >
-                                                        <Edit className="h-4 w-4" />
-                                                        تغيير كلمة المرور
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogHeader>
-                                                        <DialogTitle>
-                                                            تغيير كلمة مرور {selectedUser?.fullName}
-                                                        </DialogTitle>
-                                                    </DialogHeader>
-                                                    <div className="space-y-4">
-                                                        <div className="space-y-2">
-                                                            <Label htmlFor="newPassword">كلمة المرور الجديدة</Label>
-                                                            <div className="relative">
-                                                                <Input
-                                                                    id="newPassword"
-                                                                    type={showPassword ? "text" : "password"}
-                                                                    value={newPassword}
-                                                                    onChange={(e) => setNewPassword(e.target.value)}
-                                                                    placeholder="أدخل كلمة المرور الجديدة"
-                                                                />
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    className="absolute left-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                                                                    onClick={() => setShowPassword(!showPassword)}
-                                                                >
-                                                                    {showPassword ? (
-                                                                        <EyeOff className="h-4 w-4" />
-                                                                    ) : (
-                                                                        <Eye className="h-4 w-4" />
-                                                                    )}
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex justify-end space-x-2">
-                                                            <Button
-                                                                variant="outline"
-                                                                onClick={() => {
-                                                                    setIsDialogOpen(false);
-                                                                    setNewPassword("");
-                                                                    setSelectedUser(null);
-                                                                }}
-                                                            >
-                                                                إلغاء
-                                                            </Button>
-                                                            <Button onClick={handlePasswordChange}>
-                                                                تغيير كلمة المرور
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                </DialogContent>
-                                            </Dialog>
+                                            <Button 
+                                                size="sm" 
+                                                variant="outline"
+                                                onClick={() => {
+                                                    setSelectedUser(user);
+                                                    setIsDialogOpen(true);
+                                                }}
+                                            >
+                                                <Edit className="h-4 w-4" />
+                                                تغيير كلمة المرور
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -252,67 +202,17 @@ const PasswordsPage = () => {
                                             </Badge>
                                         </TableCell>
                                         <TableCell>
-                                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                                                <DialogTrigger asChild>
-                                                    <Button 
-                                                        size="sm" 
-                                                        variant="outline"
-                                                        onClick={() => setSelectedUser(user)}
-                                                    >
-                                                        <Edit className="h-4 w-4" />
-                                                        تغيير كلمة المرور
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogHeader>
-                                                        <DialogTitle>
-                                                            تغيير كلمة مرور {selectedUser?.fullName}
-                                                        </DialogTitle>
-                                                    </DialogHeader>
-                                                    <div className="space-y-4">
-                                                        <div className="space-y-2">
-                                                            <Label htmlFor="newPassword">كلمة المرور الجديدة</Label>
-                                                            <div className="relative">
-                                                                <Input
-                                                                    id="newPassword"
-                                                                    type={showPassword ? "text" : "password"}
-                                                                    value={newPassword}
-                                                                    onChange={(e) => setNewPassword(e.target.value)}
-                                                                    placeholder="أدخل كلمة المرور الجديدة"
-                                                                />
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    className="absolute left-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                                                                    onClick={() => setShowPassword(!showPassword)}
-                                                                >
-                                                                    {showPassword ? (
-                                                                        <EyeOff className="h-4 w-4" />
-                                                                    ) : (
-                                                                        <Eye className="h-4 w-4" />
-                                                                    )}
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex justify-end space-x-2">
-                                                            <Button
-                                                                variant="outline"
-                                                                onClick={() => {
-                                                                    setIsDialogOpen(false);
-                                                                    setNewPassword("");
-                                                                    setSelectedUser(null);
-                                                                }}
-                                                            >
-                                                                إلغاء
-                                                            </Button>
-                                                            <Button onClick={handlePasswordChange}>
-                                                                تغيير كلمة المرور
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                </DialogContent>
-                                            </Dialog>
+                                            <Button 
+                                                size="sm" 
+                                                variant="outline"
+                                                onClick={() => {
+                                                    setSelectedUser(user);
+                                                    setIsDialogOpen(true);
+                                                }}
+                                            >
+                                                <Edit className="h-4 w-4" />
+                                                تغيير كلمة المرور
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -321,6 +221,68 @@ const PasswordsPage = () => {
                     </CardContent>
                 </Card>
             )}
+            {/* Single lightweight dialog rendered once */}
+            <Dialog
+                open={isDialogOpen}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setIsDialogOpen(false);
+                        setNewPassword("");
+                        setSelectedUser(null);
+                        setShowPassword(false);
+                    }
+                }}
+            >
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>
+                            تغيير كلمة مرور {selectedUser?.fullName}
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="newPassword">كلمة المرور الجديدة</Label>
+                            <div className="relative">
+                                <Input
+                                    id="newPassword"
+                                    type={showPassword ? "text" : "password"}
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    placeholder="أدخل كلمة المرور الجديدة"
+                                />
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="absolute left-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? (
+                                        <EyeOff className="h-4 w-4" />
+                                    ) : (
+                                        <Eye className="h-4 w-4" />
+                                    )}
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="flex justify-end space-x-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => {
+                                    setIsDialogOpen(false);
+                                    setNewPassword("");
+                                    setSelectedUser(null);
+                                }}
+                            >
+                                إلغاء
+                            </Button>
+                            <Button onClick={handlePasswordChange}>
+                                تغيير كلمة المرور
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

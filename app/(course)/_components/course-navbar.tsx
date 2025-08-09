@@ -7,13 +7,11 @@ import { ChevronRight, LogOut } from "lucide-react";
 import { CourseMobileSidebar } from "./course-mobile-sidebar";
 import { UserButton } from "@/components/user-button";
 import { useSession, signOut } from "next-auth/react";
-import { useNavigationLoading } from "@/hooks/use-navigation-loading";
 import { useState } from "react";
 
 export const CourseNavbar = () => {
   const router = useRouter();
   const { data: session } = useSession();
-  const { navigateWithLoading } = useNavigationLoading();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
@@ -27,8 +25,8 @@ export const CourseNavbar = () => {
     }
   };
 
-  const handleBackToDashboard = async () => {
-    await navigateWithLoading("/dashboard");
+  const handleBackToDashboard = () => {
+    router.push("/dashboard");
   };
 
   return (

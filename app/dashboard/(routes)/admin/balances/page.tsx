@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Edit, Search, Wallet } from "lucide-react";
 import { toast } from "sonner";
@@ -149,57 +149,18 @@ const BalancesPage = () => {
                                             </Badge>
                                         </TableCell>
                                         <TableCell>
-                                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                                                <DialogTrigger asChild>
-                                                    <Button 
-                                                        size="sm" 
-                                                        variant="outline"
-                                                        onClick={() => {
-                                                            setSelectedUser(user);
-                                                            setNewBalance(user.balance.toString());
-                                                        }}
-                                                    >
-                                                        <Edit className="h-4 w-4" />
-                                                        تعديل الرصيد
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogHeader>
-                                                        <DialogTitle>
-                                                            تعديل رصيد {selectedUser?.fullName}
-                                                        </DialogTitle>
-                                                    </DialogHeader>
-                                                    <div className="space-y-4">
-                                                        <div className="space-y-2">
-                                                            <Label htmlFor="newBalance">الرصيد الجديد (جنيه)</Label>
-                                                            <Input
-                                                                id="newBalance"
-                                                                type="number"
-                                                                value={newBalance}
-                                                                onChange={(e) => setNewBalance(e.target.value)}
-                                                                placeholder="أدخل الرصيد الجديد"
-                                                                min="0"
-                                                                step="0.01"
-                                                            />
-                                                        </div>
-                                                        <div className="flex justify-end space-x-2">
-                                                            <Button
-                                                                variant="outline"
-                                                                onClick={() => {
-                                                                    setIsDialogOpen(false);
-                                                                    setNewBalance("");
-                                                                    setSelectedUser(null);
-                                                                }}
-                                                            >
-                                                                إلغاء
-                                                            </Button>
-                                                            <Button onClick={handleBalanceUpdate}>
-                                                                تحديث الرصيد
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                </DialogContent>
-                                            </Dialog>
+                                            <Button 
+                                                size="sm" 
+                                                variant="outline"
+                                                onClick={() => {
+                                                    setSelectedUser(user);
+                                                    setNewBalance(user.balance.toString());
+                                                    setIsDialogOpen(true);
+                                                }}
+                                            >
+                                                <Edit className="h-4 w-4" />
+                                                تعديل الرصيد
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -208,6 +169,54 @@ const BalancesPage = () => {
                     </CardContent>
                 </Card>
             )}
+            {/* Single lightweight dialog rendered once */}
+            <Dialog
+                open={isDialogOpen}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setIsDialogOpen(false);
+                        setNewBalance("");
+                        setSelectedUser(null);
+                    }
+                }}
+            >
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>
+                            تعديل رصيد {selectedUser?.fullName}
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="newBalance">الرصيد الجديد (جنيه)</Label>
+                            <Input
+                                id="newBalance"
+                                type="number"
+                                value={newBalance}
+                                onChange={(e) => setNewBalance(e.target.value)}
+                                placeholder="أدخل الرصيد الجديد"
+                                min="0"
+                                step="0.01"
+                            />
+                        </div>
+                        <div className="flex justify-end space-x-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => {
+                                    setIsDialogOpen(false);
+                                    setNewBalance("");
+                                    setSelectedUser(null);
+                                }}
+                            >
+                                إلغاء
+                            </Button>
+                            <Button onClick={handleBalanceUpdate}>
+                                تحديث الرصيد
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

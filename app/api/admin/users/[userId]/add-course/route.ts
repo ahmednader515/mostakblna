@@ -101,3 +101,80 @@ export async function POST(
         );
     }
 } 
+
+export async function DELETE(
+    req: NextRequest,
+    { params }: { params: { userId: string } }
+) {
+    try {
+        const session = await auth();
+
+        if (!session?.user) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
+        if (session.user.role !== "ADMIN") {
+            return NextResponse.json(
+                { error: "Forbidden" },
+                { status: 403 }
+            );
+        }
+
+        const { courseId } = await req.json();
+
+        if (!courseId) {
+            return NextResponse.json(
+                { error: "Course ID is required" },
+                { status: 400 }
+            );
+        }
+
+        // Ensure student exists
+        const user = await db.user.findUnique({
+            where: {
+                id: params.userId,
+                role: "USER",
+            },
+        });
+
+        if (!user) {
+            return NextResponse.json(
+                { error: "Student not found" },
+                { status: 404 }
+            );
+        }
+
+        // Find existing purchase for this user and course
+        const existingPurchase = await db.purchase.findUnique({
+            where: {
+                userId_courseId: {
+                    userId: params.userId,
+                    courseId,
+                },
+            },
+        });
+
+        if (!existingPurchase) {
+            return NextResponse.json(
+                { error: "Course not found for this student" },
+                { status: 404 }
+            );
+        }
+
+        // Delete purchase to free unique constraint for re-adding later
+        await db.purchase.delete({
+            where: { id: existingPurchase.id },
+        });
+
+        return NextResponse.json({ message: "Course removed successfully" });
+    } catch (error) {
+        console.error("[ADMIN_REMOVE_COURSE]", error);
+        return NextResponse.json(
+            { error: "Internal Error" },
+            { status: 500 }
+        );
+    }
+}

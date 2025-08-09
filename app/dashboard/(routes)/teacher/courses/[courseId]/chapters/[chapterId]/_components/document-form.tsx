@@ -49,36 +49,19 @@ export const DocumentForm = ({
     // Helper function to download document
     const downloadDocument = async (url: string) => {
         try {
-            // Try the API download first
-            const downloadUrl = `/api/courses/${courseId}/chapters/${chapterId}/document/download`;
-            const response = await fetch(downloadUrl);
-            
-            if (response.ok) {
-                const blob = await response.blob();
-                const downloadUrl2 = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = downloadUrl2;
-                link.download = getFilenameFromUrl(url);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(downloadUrl2);
-            } else {
-                // Fallback to direct download
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = getFilenameFromUrl(url);
-                link.target = '_blank';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
+            const relative = `/api/courses/${courseId}/chapters/${chapterId}/document/download`;
+            const absoluteUrl = typeof window !== 'undefined' ? new URL(relative, window.location.origin).toString() : relative;
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = absoluteUrl;
+            document.body.appendChild(iframe);
+            setTimeout(() => {
+                try { document.body.removeChild(iframe); } catch {}
+            }, 10000);
         } catch (error) {
             console.error('Download failed:', error);
-            // Final fallback
             const link = document.createElement('a');
             link.href = url;
-            link.download = getFilenameFromUrl(url);
             link.target = '_blank';
             document.body.appendChild(link);
             link.click();

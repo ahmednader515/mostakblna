@@ -77,42 +77,22 @@ const ChapterPage = () => {
   // Helper function to download document
   const downloadDocument = async (url: string) => {
     try {
-      // Try the API download first
-      const downloadUrl = `/api/courses/${routeParams.courseId}/chapters/${routeParams.chapterId}/document/download`;
-      const response = await fetch(downloadUrl);
-      
-      if (response.ok) {
-        const blob = await response.blob();
-        const downloadUrl2 = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = downloadUrl2;
-        // Use the chapter's document name if available, otherwise fallback to URL extraction
-        const filename = chapter?.documentName || getFilenameFromUrl(url);
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(downloadUrl2);
-      } else {
-        // Fallback to direct download
-        const link = document.createElement('a');
-        link.href = url;
-        // Use the chapter's document name if available, otherwise fallback to URL extraction
-        const filename = chapter?.documentName || getFilenameFromUrl(url);
-        link.download = filename;
-        link.target = '_blank';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
+      const relative = `/api/courses/${routeParams.courseId}/chapters/${routeParams.chapterId}/document/download`;
+      const absoluteUrl = typeof window !== 'undefined' ? new URL(relative, window.location.origin).toString() : relative;
+      // Trigger native download flow (better for Android WebViews) via hidden iframe
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = absoluteUrl;
+      document.body.appendChild(iframe);
+      // Clean up after a short delay
+      setTimeout(() => {
+        try { document.body.removeChild(iframe); } catch {}
+      }, 10000);
     } catch (error) {
       console.error('Download failed:', error);
-      // Final fallback
+      // Final fallback: open original URL
       const link = document.createElement('a');
       link.href = url;
-      // Use the chapter's document name if available, otherwise fallback to URL extraction
-      const filename = chapter?.documentName || getFilenameFromUrl(url);
-      link.download = filename;
       link.target = '_blank';
       document.body.appendChild(link);
       link.click();

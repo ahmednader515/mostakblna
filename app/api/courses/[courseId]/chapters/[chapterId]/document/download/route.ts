@@ -75,12 +75,20 @@ export async function GET(
             }
         })();
 
+        // Prepare robust Content-Disposition with UTF-8 filename support
+        const asciiFallback = filename.replace(/[^\x20-\x7E]/g, '_');
+        const encodedFilename = encodeURIComponent(filename);
+
+        // Derive Content-Length
+        const contentLength = String(fileBuffer.byteLength);
+
         // Create response with download headers
         const downloadResponse = new NextResponse(fileBuffer, {
             status: 200,
             headers: {
                 'Content-Type': contentType,
-                'Content-Disposition': `attachment; filename="${filename}"`,
+                'Content-Length': contentLength,
+                'Content-Disposition': `attachment; filename="${asciiFallback}"; filename*=UTF-8''${encodedFilename}`,
                 'Cache-Control': 'no-cache',
             },
         });

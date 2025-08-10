@@ -7,7 +7,7 @@ export async function PATCH(
     { params }: { params: Promise<{ quizId: string }> }
 ) {
     try {
-        const { userId } = await auth();
+        const { userId, user } = await auth();
         const resolvedParams = await params;
 
         if (!userId) {
@@ -16,14 +16,14 @@ export async function PATCH(
 
         const { isPublished } = await req.json();
 
-        // Verify the quiz belongs to the teacher
+        // Verify access: admin or owner teacher
         const quiz = await db.quiz.findFirst({
-            where: {
-                id: resolvedParams.quizId,
-                course: {
-                    userId: userId
-                }
-            }
+            where: user?.role === "ADMIN"
+                ? { id: resolvedParams.quizId }
+                : {
+                    id: resolvedParams.quizId,
+                    course: { userId: userId },
+                },
         });
 
         if (!quiz) {

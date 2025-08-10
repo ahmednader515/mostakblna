@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart, Compass, Layout, List, Wallet, Shield, Users, Eye, TrendingUp, BookOpen, FileText, Award } from "lucide-react";
+import { BarChart, Compass, Layout, List, Wallet, Shield, Users, Eye, TrendingUp, BookOpen, FileText, Award, PlusSquare } from "lucide-react";
 import { SidebarItem } from "./sidebar-item";
 import { usePathname } from "next/navigation";
 
@@ -60,6 +60,16 @@ const adminRoutes = [
         icon: Users,
         label: "إدارة المستخدمين",
         href: "/dashboard/admin/users",
+    },
+    {
+        icon: List,
+        label: "الكورسات",
+        href: "/dashboard/admin/courses",
+    },
+    {
+        icon: FileText,
+        label: "الاختبارات",
+        href: "/dashboard/admin/quizzes",
     },
     {
         icon: Shield,

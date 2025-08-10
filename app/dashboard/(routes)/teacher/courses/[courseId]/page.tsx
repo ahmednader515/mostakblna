@@ -19,7 +19,7 @@ export default async function CourseIdPage({
     const resolvedParams = await params;
     const { courseId } = resolvedParams;
 
-    const { userId } = await auth();
+    const { userId, user } = await auth();
 
     if (!userId) {
         return redirect("/");
@@ -28,7 +28,6 @@ export default async function CourseIdPage({
     const course = await db.course.findUnique({
         where: {
             id: courseId,
-            userId
         },
         include: {
             chapters: {
@@ -46,6 +45,11 @@ export default async function CourseIdPage({
 
     if (!course) {
         return redirect("/");
+    }
+
+    // Only owner or admin can view editor
+    if (user?.role !== "ADMIN" && course.userId !== userId) {
+        return redirect("/dashboard");
     }
 
     const requiredFields = [

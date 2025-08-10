@@ -61,7 +61,7 @@ export async function PATCH(
     { params }: { params: Promise<{ courseId: string }> }
 ) {
     try {
-        const { userId } = await auth();
+        const { userId, user } = await auth();
         const resolvedParams = await params;
         const values = await req.json();
 
@@ -69,11 +69,12 @@ export async function PATCH(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
+        const whereClause = user?.role === "ADMIN"
+            ? { id: resolvedParams.courseId }
+            : { id: resolvedParams.courseId, userId };
+
         const course = await db.course.update({
-            where: {
-                id: resolvedParams.courseId,
-                userId
-            },
+            where: whereClause,
             data: {
                 ...values,
             }
@@ -91,7 +92,7 @@ export async function DELETE(
     { params }: { params: Promise<{ courseId: string }> }
 ) {
     try {
-        const { userId } = await auth();
+        const { userId, user } = await auth();
         const resolvedParams = await params;
 
         if (!userId) {
@@ -101,12 +102,16 @@ export async function DELETE(
         const course = await db.course.findUnique({
             where: {
                 id: resolvedParams.courseId,
-                userId: userId,
             }
         });
 
         if (!course) {
             return new NextResponse("Not found", { status: 404 });
+        }
+
+        // Only owner or admin can delete
+        if (user?.role !== "ADMIN" && course.userId !== userId) {
+            return new NextResponse("Forbidden", { status: 403 });
         }
 
         const deletedCourse = await db.course.delete({

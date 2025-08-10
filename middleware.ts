@@ -43,8 +43,8 @@ export default withAuth(
     const isAdminRoute = req.nextUrl.pathname.startsWith("/dashboard/admin");
     const isAdmin = req.nextauth.token?.role === "ADMIN";
 
-    // If user is not a teacher but trying to access teacher routes
-    if (isTeacherRoute && !isTeacher) {
+    // If user is not a teacher or admin but trying to access teacher routes
+    if (isTeacherRoute && !(isTeacher || isAdmin)) {
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
 

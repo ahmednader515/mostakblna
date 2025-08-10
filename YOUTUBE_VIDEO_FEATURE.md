@@ -12,8 +12,8 @@ The LMS now supports two methods for adding videos to chapters:
 ## Features
 
 ### Video Player
-- Uses Video.js for consistent video playback
-- Supports both uploaded videos and YouTube embeds (via videojs-youtube)
+- Uses Plyr for consistent video playback
+- Supports both uploaded videos and YouTube embeds (native Plyr YouTube provider)
 - Advanced controls with speed options and keyboard shortcuts
 - Full-screen support
 - Volume control with slider
@@ -76,13 +76,13 @@ The LMS now supports two methods for adding videos to chapters:
 
 ## Dependencies Added
 - `@radix-ui/react-tabs`: For tabbed interface
-- `video.js`: For video playback
-- `videojs-youtube`: YouTube tech for Video.js
+- `plyr`: For video playback (HTML5 + YouTube)
 
 ## Dependencies Removed
 - `@mux/mux-node`: No longer using Mux for video processing
-- `@mux/mux-player-react`: Replaced with Video.js
-- `react-player`: Replaced previously with Plyr, now with Video.js
+- `@mux/mux-player-react`: Replaced with Plyr
+- `video.js`: Replaced with Plyr
+- `videojs-youtube`: Replaced with Plyr's native YouTube provider
 
 ## Browser Support
 - Modern browsers with HTML5 video support
